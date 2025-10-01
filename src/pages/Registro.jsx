@@ -1,7 +1,17 @@
 import NavBar from "../components/NavBar"
 import Footer from "../components/Footer"
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 function Registro() {
+
+    const navegador = useNavigate()
+    const [usuario, setUsuario] = useState("")
+    const [email, setEmail] = useState("")
+    const [contrasenna, setContrasenna] = useState("")
+    const [contra2, setContra2] = useState("")
+    const [ciudad, setCiudad] = useState()
+
     return (
         <>  
         <body>
