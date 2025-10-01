@@ -4,6 +4,8 @@ import { Route, Routes, Link } from 'react-router-dom';
 import Contacto from './pages/Contacto.jsx';
 import './App.css'
 import Registro from './pages/Registro.jsx';
+import Login from './pages/Login.jsx';
+import Recovery from './pages/recovery.jsx';
 
 //Componente de enrutacion con Routes
 
@@ -14,6 +16,8 @@ function App() {
       <Route path='/' Component={Home} />
       <Route path='/contacto' Component={Contacto} />
       <Route path='/registro' Component={Registro} />
+      <Route path='/login' Component={Login} />
+      <Route path='/recovery' Component={Recovery} />
     </Routes>
   )
 }
