@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import CardMedicamento from "./CardMedicamento"
 
 function Content() {
-     // Uso de contexto para cargar los datos. 
+    // Uso de contexto para cargar los datos. 
     const [medicamento, setMedicamento] = useState("")
     const [ciudad, setCiudad] = useState("0")
-    let medicamentos = []
+    const [medicamentos, setMedicamentos] = useState([])
 
     let ubicacion = {
         latitud: '',
@@ -53,15 +53,17 @@ function Content() {
     }
 
     function guardarMeds(arreglo) {
+        const nuevosMedicamentos = []
         for (let index = 0; index < arreglo.length; index++) {
             const med = arreglo[index];
             const productos = med['presentacionesExistentes'][0]['productos']
             for (let i = 0; i < productos.length; i++) {
                 const producto = productos[i];
-                medicamentos.push(producto)
+                nuevosMedicamentos.push(producto)
             }
         }
-        localStorage.setItem('medicamentos', JSON.stringify(medicamentos))
+        setMedicamentos(nuevosMedicamentos);
+        localStorage.setItem('medicamentos', JSON.stringify(nuevosMedicamentos));
     }
     return (
         <>
@@ -87,23 +89,21 @@ function Content() {
                                 <div className="input-group-append">
                                     <button className="btn btn-outline-secondary" type="button" onClick={() => { consultarApi() }}>Buscar </button>
                                 </div>
-                                
+
                             </div>
                         </form>
-                        <div className="col-md-8">
-                            {medLocal.map((prod) => {
-                                <CardMedicamento producto={prod}/>
-                            })}
-                            
-                        </div>
                     </div>
-
                 </div>
+                <div className="col-md">
+                            <div className="row g-4">
+                                {medicamentos.map((prod) => (
+                                    <CardMedicamento producto={prod} />
+                                ))}
+                            </div>
+                        </div>
             </div>
         </>
-
     )
-
 }
 
 export default Content

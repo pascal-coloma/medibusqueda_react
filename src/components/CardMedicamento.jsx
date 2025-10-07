@@ -3,10 +3,10 @@ import React, { useEffect } from "react";
 function CardMedicamento ({ producto }) {
   return (
     <>
-      <div className="col-md-4">
-        <form className="medicamentosJs" id="tarjetasMeds">
-          <div className="card shadow-sm">
-            <div className="card-body">
+      <div className="col-md-4 mb-4">
+        <form className="medicamentosJs border-info" id="tarjetasMeds">
+          <div className="card bg-light">
+            <div className="card-body text-black">
               <h5 className="nombre card-title fw-bold text-capitalize text-center">
                 {producto.nombreMedicamento}
               </h5>
