@@ -40,7 +40,6 @@ function Login() {
                 <button type="button" onClick={validate} className="btn btn-success mx-auto d-block">Enviar</button>
             </main>
 
-    
     <Footer/>
      </>
     )

@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CardMedicamento from "./CardMedicamento"
 
 function Content() {
-
+     // Uso de contexto para cargar los datos. 
     const [medicamento, setMedicamento] = useState("")
     const [ciudad, setCiudad] = useState("0")
     let medicamentos = []
@@ -25,6 +25,8 @@ function Content() {
         default:
             break;
     }
+
+    const medLocal = JSON.parse(localStorage.getItem("medicamentos") || "[]")
 
     const consultarApi = () => {
 
@@ -59,15 +61,8 @@ function Content() {
                 medicamentos.push(producto)
             }
         }
-        const laboratorios = medicamentos.map((obj) => {
-            return <h1>{obj.laboratorio}</h1>
-        })
-        
-        console.log(laboratorios)
-
+        localStorage.setItem('medicamentos', JSON.stringify(medicamentos))
     }
-    //Rellenar cards de manera dinamica
-
     return (
         <>
             <div className="container-fluid">
@@ -92,9 +87,13 @@ function Content() {
                                 <div className="input-group-append">
                                     <button className="btn btn-outline-secondary" type="button" onClick={() => { consultarApi() }}>Buscar </button>
                                 </div>
+                                
                             </div>
                         </form>
                         <div className="col-md-8">
+                            {medLocal.map((prod) => {
+                                <CardMedicamento producto={prod}/>
+                            })}
                             
                         </div>
                     </div>
