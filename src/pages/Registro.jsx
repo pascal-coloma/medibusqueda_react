@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar"
 import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
+import Login from "./Login";
 
 function Registro() {
 
@@ -33,6 +34,7 @@ function Registro() {
                     return
                 }
             }
+            Login(usuario)
         }
     }
     
@@ -82,7 +84,7 @@ function Registro() {
                         <label className="form-check-label" for="exampleCheck1"><strong>Acepto los <a href="">términos y
                             condiciones</a></strong></label>
                     </div>
-                    <button type="button" onClick={validacion} className="btn btn-success mx-auto d-block">
+                    <button type="button" onClick={validacion()} className="btn btn-success mx-auto d-block">
                         Enviar
                     </button>
                 </form>

@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom"
 
 function NavBar() {
+
+   function test(){
+    if (localStorage.getItem("user")) {
+        return <a className="nav-link" href="login" id="sesionNav">Cerrar Sesion</a>
+    } else {
+        return <a className="nav-link" href="login" id="sesionNav">Iniciar Sesion</a>
+    }
+   }
     return (
         <>  
         <div className="fixed-top">
@@ -26,8 +34,8 @@ function NavBar() {
                             <li className="nav-item">
                                 <a className="nav-link" href="contacto">Contacto</a>
                             </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="login" id="sesionNav">Cerrar Sesion</a>
+                            <li className="nav-item"> 
+                                {test()}
                             </li>
                         </ul>
                     </div>
