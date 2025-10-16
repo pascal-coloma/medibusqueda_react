@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar"
 import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { obtainUsers } from "../Api/ApiUsers"
 // import {login} from "../components/LoginContext";
 
 function Registro() {
@@ -11,31 +12,59 @@ function Registro() {
     const [contrasenna, setContrasenna] = useState("")
     const [contra2, setContra2] = useState("")
     const [ciudad, setCiudad] = useState("0")
+    const [acceptTerms, setAcceptTerms] = useState(false)
+    const navigate = useNavigate();
+    const [error, setError] = useState("")
 
-    const validacion = () => {
- 
-        let arregloDatos = JSON.parse(localStorage.getItem("arregloDatos")) || []
-        if(usuario=="" || email=="" || contrasenna=="" || contra2==""){
-            alert("Los campos no pueden estar vacios")
-            return
-        } else if(usuario.length < 5){
-            alert("El nombre de usuario debe tener al menos 5 caracteres")
-            return
-        }else if(contrasenna !== contra2){
-            alert("Las contraseñas no coinciden")
-            return
-        } else if(ciudad=='0'){
-            alert("Debe seleccionar una ciudad")
-            return
-        }else{
-            for(let i=0; i<arregloDatos.length; i++){
-                if(arregloDatos[i].usuario === usuario || arregloDatos[i].email === email){
-                    alert("El usuario o email ya están registrados")
-                    return
-                }
-            }
-            login(usuario)
+    const validacion = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        if (usuario === "" || email === "" || contrasenna === "" || contra2 === "") {
+            setError("Los campos no pueden estar vacios");
+            return;
         }
+
+        if (usuario.length < 5) {
+            setError("El nombre de usuario debe tener al menos 5 caracteres");
+            return;
+        }
+
+        if (contrasenna !== contra2) {
+            setError("Las contraseñas no coinciden");
+            return;
+        }
+
+        if (ciudad === '0') {
+            setError("Debe seleccionar una ciudad");
+            return;
+        }
+
+        if (!acceptTerms) {
+            setError("Debe aceptar los términos y condiciones");
+            return;
+        }
+
+        
+        let usuarios;
+        try {
+            usuarios = await obtainUsers();
+        } catch (err) {
+            console.error(err);
+            setError('No se pudo verificar usuarios. Intente más tarde.');
+            return;
+        }
+
+        const usuarioEncontrado = usuarios.usuarios.find(u => u.nombre === usuario || u.correo === usuario);
+
+        if (usuarioEncontrado) {
+            setError("El usuario ya existe");
+            return;
+        }
+
+        // Si llega aquí la validación pasó
+        alert("Usuario creado con exito");
+        navigate("/");
     }
     
     // Uso de localstorage para almacenamiento de credenciales 
@@ -80,14 +109,15 @@ function Registro() {
                     </select>
 
                     <div id="selec_ciudad" className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="exampleCheck1"></input>
-                        <label className="form-check-label" for="exampleCheck1"><strong>Acepto los <a href="">términos y
+                        <input type="checkbox" className="form-check-input" id="exampleCheck1" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} />
+                        <label className="form-check-label" htmlFor="exampleCheck1"><strong>Acepto los <a href="">términos y
                             condiciones</a></strong></label>
                     </div>
                     <button type="submit"  className="btn btn-success mx-auto d-block">
                         Enviar
                     </button>
                 </form>
+                {error && <p style={{ color: "red" }}>{error}</p>}
 
             <Footer />
 
