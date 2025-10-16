@@ -47,7 +47,7 @@ function Recovery() {
                             </div>
                             </div>
                             <p>elefante volador</p>
-                            <button className="close btn btn-secondary" onClick={() => setBotonPopup2(false)}>cerrar </button>
+                            <button className="close btn btn-secondary" onClick={() => setBotonPopup2(false) || setBotonPopup(false)}>cerrar </button>
                         </Modal>
                 </div>
             </Modal>

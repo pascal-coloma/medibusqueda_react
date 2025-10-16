@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar"
 import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import Login from "./Login";
+// import {login} from "../components/LoginContext";
 
 function Registro() {
 
@@ -34,14 +34,14 @@ function Registro() {
                     return
                 }
             }
-            Login(usuario)
+            login(usuario)
         }
     }
     
     // Uso de localstorage para almacenamiento de credenciales 
     useEffect(() => {
         localStorage.setItem("username", JSON.stringify(usuario))
-    }, [usuario]);
+    }, [usuario])
 
     useEffect(() => {
         localStorage.setItem("pass", JSON.stringify(contra2) )
@@ -51,7 +51,7 @@ function Registro() {
         <>
             <NavBar />
             <div className="crearUser" />
-            <form>
+            <form onSubmit={validacion}>
                 <div className="mb-3">
                     <label htmlFor="userId" className="form-label"><strong>Nombre de usuario</strong></label>
                     <input type="text" id="userId" className="form-control" aria-describedby="emailHelp"
@@ -84,7 +84,7 @@ function Registro() {
                         <label className="form-check-label" for="exampleCheck1"><strong>Acepto los <a href="">términos y
                             condiciones</a></strong></label>
                     </div>
-                    <button type="button" onClick={validacion()} className="btn btn-success mx-auto d-block">
+                    <button type="submit"  className="btn btn-success mx-auto d-block">
                         Enviar
                     </button>
                 </form>

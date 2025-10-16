@@ -2,6 +2,7 @@ import Footer from "../components/Footer"
 import { redirect, useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar"
 import { useContext, useEffect, useState } from "react"
+import { obtainUsers } from "../Api/ApiUsers"
 
 
 function Login() {
@@ -9,13 +10,21 @@ function Login() {
 
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
+    const [error, setError] = useState("")
+    
 
-    const validate = () =>{
+    const validate = async(e) =>{
         const usuario = JSON.parse(localStorage.getItem('username'))
         const contra = JSON.parse(localStorage.getItem('pass'))
+        const usuarios = await obtainUsers()
+        setError("");
+        e.preventDefault();
 
-        if (usuario === user && contra === pass){
-            navegador("/")
+        const usuarioEncontrado = usuarios.usuarios.find(u=> u.nombre === usuario || u.correo === usuario && u.contraseña === contra)
+
+        if(!usuarioEncontrado){
+            setError("Usuario o contraseña incorrectos")
+            return
         }
     }
     
@@ -40,8 +49,8 @@ function Login() {
                 <button type="button" onClick={validate} className="btn btn-success mx-auto d-block">Enviar</button>
             </main>
 
-    <Footer/>
-     </>
+            <Footer/>
+        </>
     )
 }
 
