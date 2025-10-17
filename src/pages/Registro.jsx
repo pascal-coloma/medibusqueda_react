@@ -3,6 +3,7 @@ import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { obtainUsers } from "../Api/ApiUsers"
+import { useForm } from "react-hook-form"
 
 function Registro() {
     const navigate = useNavigate();
