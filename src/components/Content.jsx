@@ -30,7 +30,7 @@ function Content() {
 
     const consultarApi = () => {
 
-        const url = "http://localhost:3000/api/medicamento"
+        const url = "http://54.83.108.238:3000/api/medicamento"
         const payload = {
             latitud: ubicacion.latitud,
             longitud: ubicacion.longitud,
