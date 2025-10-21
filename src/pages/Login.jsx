@@ -1,31 +1,60 @@
 import Footer from "../components/Footer"
-import { redirect, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar"
-import { useContext, useEffect, useState } from "react"
+import { useState } from "react"
 import { obtainUsers } from "../Api/ApiUsers"
 
 
+
 function Login() {
-    const navegador = useNavigate()
+    const navigate = useNavigate()
 
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
     const [error, setError] = useState("")
-    
 
-    const validate = async(e) =>{
-        const usuario = JSON.parse(localStorage.getItem('username'))
-        const contra = JSON.parse(localStorage.getItem('pass'))
-        const usuarios = await obtainUsers()
-        setError("");
+    const validate = async (e) => {
         e.preventDefault();
+        setError("");
 
-        const usuarioEncontrado = usuarios.usuarios.find(u=> u.nombre === usuario || u.correo === usuario && u.contraseña === contra)
+        const inputUser = user.trim();
+        const inputPass = pass;
 
-        if(!usuarioEncontrado){
+        if (!inputUser || !inputPass) {
+            setError('Ingrese usuario y contraseña');
+            return;
+        }
+
+        let usuariosResp;
+        try {
+            usuariosResp = await obtainUsers();
+        } catch (err) {
+            console.error(err);
+            setError('Error al obtener usuarios. Intente más tarde.');
+            return;
+        }
+
+        const lista = usuariosResp && (usuariosResp.usuarios || usuariosResp.users || Array.isArray(usuariosResp) && usuariosResp) || [];
+
+        if (!Array.isArray(lista)) {
+            setError('Respuesta de usuarios inválida');
+            return;
+        }
+
+        const usuarioEncontrado = lista.find(u => (
+            (u.nombre === inputUser || u.correo === inputUser)
+        ) && (
+            u.contraseña === inputPass
+        ));
+
+        if (!usuarioEncontrado) {
             setError("Usuario o contraseña incorrectos")
             return
         }
+
+        alert("Inicio de sesion exitoso")
+        localStorage.setItem('username', JSON.stringify(inputUser))
+        navigate('/perfil')
     }
     
     return (
@@ -47,6 +76,8 @@ function Login() {
                 </div>
 
                 <button type="button" onClick={validate} className="btn btn-success mx-auto d-block">Enviar</button>
+
+                {error && <p className="text-danger text-center mt-3">{error}</p>}
             </main>
 
             <Footer/>
