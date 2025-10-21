@@ -60,10 +60,9 @@ function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, on
                 <div className="mb-3">
                     <label className="form-label">Ciudad</label>
                     <select className="form-select" value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
-                        <option value="">Seleccione una ciudad</option>
-                        <option value="Viña del mar">Viña del mar</option>
-                        <option value="Valparaiso">Valparaiso</option>
-                        <option value="Chillan">Chillan</option>
+                        <option value="1">Viña del mar</option>
+                        <option value="2">Valparaiso</option>
+                        <option value="3">Chillan</option>
                     </select>
                 </div>
 
