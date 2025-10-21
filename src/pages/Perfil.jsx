@@ -27,7 +27,6 @@ function Perfil() {
     }
 
     if (usuario) {
-        const correo = localStorage.getItem("email")
         return (
         <>
             <NavBar />
@@ -40,7 +39,6 @@ function Perfil() {
                                 <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fcd%2Fac%2F8a%2Fcdac8a9d6bb1b43f52fefb4607e182ef.jpg&f=1&nofb=1&ipt=7e81db28a24a2aaf67d2f5982f50145c4ac4cf64587b301017bbff6734e8a77b"
                                     class="rounded-circle  img-fluid hero-image " />
                                 <h2 id="welcome">Bienvenido, {JSON.parse(usuario)}</h2>
-                                <h3> Correo : {correo} </h3>
                                 <button type="button" class="btn btn-primary" onClick={logout}>Cerrar sesion</button>
                             </div>
                             <div class="col-md-4">

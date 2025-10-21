@@ -12,7 +12,7 @@ function Registro() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const watchedPassword = watch('contrasenna');
 
-    const onSubmit = async (data) => {
+    const registrar = async (data) => {
         setError("");
 
         // validaciones adicionales
@@ -54,7 +54,6 @@ function Registro() {
 
         // guardar en localStorage y navegar
         localStorage.setItem('username', JSON.stringify(data.usuario));
-        localStorage.setItem('pass', JSON.stringify(data.contra2));
 
         alert('Usuario creado con exito');
         navigate('/');
@@ -65,7 +64,7 @@ function Registro() {
             <NavBar />
             <div className="container py-4" style={{ maxWidth: 600 }}>
                 <h1 className="mb-3">Registro</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(registrar)}>
                     <div className="mb-3">
                         <label htmlFor="userId" className="form-label"><strong>Nombre de usuario</strong></label>
                         <input type="text" id="userId" className="form-control" placeholder="Ingrese su nombre de usuario" {...register('usuario', { required: true })} />
