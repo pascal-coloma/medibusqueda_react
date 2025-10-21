@@ -4,7 +4,8 @@ import CardMedicamento from "./CardMedicamento"
 function Content() {
     // Uso de contexto para cargar los datos. 
     const [medicamento, setMedicamento] = useState("")
-    const [ciudad, setCiudad] = useState("0")
+    const storedCiudad = localStorage.getItem("ciudad")
+    const [ciudad, setCiudad] = useState(storedCiudad ? storedCiudad : "0")
     const [medicamentos, setMedicamentos] = useState([])
 
     let ubicacion = {
@@ -30,6 +31,7 @@ function Content() {
 
     const consultarApi = () => {
 
+        const ultimas = JSON.parse(localStorage.getItem("busquedasrecientes"))|| [] 
         const url = "http://localhost:3000/api/medicamento"
         const payload = {
             latitud: ubicacion.latitud,
@@ -46,6 +48,8 @@ function Content() {
             .then(response => response.json())
             .then(json => {
                 guardarMeds(json['listado'])
+                ultimas.push(payload.nombreMedicamento)
+                localStorage.setItem("busquedasrecientes", JSON.stringify(ultimas))
             })
             .catch(error => {
                 console.log(error.message);
@@ -77,7 +81,7 @@ function Content() {
                                 <select
                                     value={ciudad} onChange={e => setCiudad(e.target.value)}
                                     id="ciudad" name="ciudad" className="form-select mb-3" aria-label="Select city">
-                                    <option value="0"></option>
+                                    <option value="0">Ciudad</option>
                                     <option value="1" id="vinna">Viña del Mar</option>
                                     <option value="2" id="valpo">Valparaiso</option>
                                     <option value="3" id="chillan">Chillan</option>

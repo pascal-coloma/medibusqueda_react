@@ -19,12 +19,14 @@ export function LoginProvider({children}){
     }
 
     const logout = () => {
-        localStorage.removeItem("user")
+        localStorage.removeItem("username")
+        localStorage.removeItem("profileImage")
+        localStorage.removeItem("ciudad")
         setUsuario(null)
     }
 
     return (
-        <LoginContext.Provider value={usuario}>
+        <LoginContext.Provider value={{usuario, login, logout}}>
             {children}
         </LoginContext.Provider>
         

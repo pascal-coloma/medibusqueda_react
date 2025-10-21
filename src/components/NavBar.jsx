@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom"
+import { useContext } from "react"
+import { LoginContext } from "./LoginContext"
 
 function NavBar() {
+    const {logout} = useContext(LoginContext)
 
    function test(){
-    if (localStorage.getItem("user")) {
-        return <a className="nav-link" href="login" id="sesionNav">Cerrar Sesion</a>
+    if (localStorage.getItem("username")) {
+        return <a className="nav-link" href="login" onClick={logout} id="sesionNav">Cerrar Sesion</a>
     } else {
         return <a className="nav-link" href="login" id="sesionNav">Iniciar Sesion</a>
     }

@@ -1,0 +1,52 @@
+.container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    box-sizing: border-box;
+}
+
+.profile-row {
+    display: block;
+}
+
+.perfilusr {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.perfilusr .hero-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.profile-left,
+.profile-right {
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .profile-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .profile-left {
+        flex: 70%; 
+        padding: 1rem;
+    }
+
+    .profile-right {
+        flex: 30%; 
+        padding: 1rem;
+    }
+}
