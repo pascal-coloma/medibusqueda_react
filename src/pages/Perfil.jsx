@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { LoginContext } from "../components/LoginContext"
 import Popup from "../components/modal"
 import EditarPerfil from "../components/EditarPerfil"
+import Mapa from "../components/mapa"
 
 
 function Perfil() {
@@ -83,7 +84,7 @@ function Perfil() {
                     </div>
                 </section>
             </div>
-
+                <Mapa />
         </>
         )
     } else{

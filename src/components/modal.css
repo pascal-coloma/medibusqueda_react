@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 99999;
 }
 
 .popup-inner{
@@ -15,6 +16,7 @@
     width: 100%;
     padding: 32px;
     background: #fff;
+    z-index: 100000;
 }
 
 .popup-inner .close-btn{
@@ -22,4 +24,8 @@
     top: 16px;
     right: 16px;
     width: 32px;
+}
+
+.leaflet-container, #map-container {
+    z-index: 0 !important;
 }
