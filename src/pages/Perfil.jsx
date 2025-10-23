@@ -26,7 +26,7 @@ function Perfil() {
     const [fotoState, setFotoState] = useState(localStorage.getItem('profileImage') || '')
 
     function recientes(){
-        const reciente = JSON.parse(localStorage.getItem("busquedasrecientes"))
+        const reciente = JSON.parse(localStorage.getItem("busquedasrecientes")) || []
         
         return (
             <>

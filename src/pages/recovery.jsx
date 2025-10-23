@@ -57,8 +57,6 @@ function Recovery() {
             return;
         }
         setBotonPopup2(true);
-        setBotonPopup(false);
-        
     }
 
     const handleConfirmNewPassword = () => {

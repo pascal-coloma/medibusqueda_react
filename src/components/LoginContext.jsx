@@ -22,6 +22,7 @@ export function LoginProvider({children}){
         localStorage.removeItem("username")
         localStorage.removeItem("profileImage")
         localStorage.removeItem("ciudad")
+        localStorage.removeItem("busquedasrecientes")
         setUsuario(null)
     }
 
