@@ -11,16 +11,20 @@ function Mapa({ initialCiudad } = {}) {
         if (!containerRef.current) return
             const ciudad = (typeof initialCiudad !== 'undefined') ? String(initialCiudad) : (localStorage.getItem('ciudad') || '0')
         let ubicacion = { lat: -33.033604, lng: -71.532814} // valor por defecto
+        let nombreCiudad = 'MediBusqueda'
 
         switch (ciudad) {
             case '1':
                 ubicacion = { lat: -33.0513034, lng: -71.6233221 }
+                nombreCiudad= 'Viña del Mar'
                 break
             case '2': 
                 ubicacion = { lat: -33.0473128, lng: -71.6127458 }
+                nombreCiudad= 'Valparaiso'
                 break
             case '3':
                 ubicacion = { lat: -36.6062508, lng: -72.1023137 }
+                nombreCiudad= 'Chillan'
                 break
             default:
                 break
@@ -35,7 +39,7 @@ function Mapa({ initialCiudad } = {}) {
             }).addTo(map)
 
             const marker = L.marker([ubicacion.lat, ubicacion.lng]).addTo(map)
-            marker.bindPopup('MediBusqueda').openPopup()
+            marker.bindPopup(nombreCiudad).openPopup()
 
             mapRef.current = map
         } else {

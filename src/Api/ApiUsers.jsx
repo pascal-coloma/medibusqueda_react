@@ -8,7 +8,7 @@ export const obtainUsers = async ()=>{
     return usuarios
     }catch(error){
         console.log(error)
-        return{tutal_users: 0,
+        return{total_users: 0,
                users: []
         }
     }

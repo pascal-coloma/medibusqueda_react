@@ -55,6 +55,7 @@ function Login() {
         alert("Inicio de sesion exitoso")
         localStorage.setItem('ciudad', usuarioEncontrado.ciudad)
         localStorage.setItem('username', JSON.stringify(inputUser))
+        localStorage.removeItem("busquedasrecientes")
         navigate('/perfil')
     }
     
