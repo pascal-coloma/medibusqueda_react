@@ -34,7 +34,7 @@ function Login() {
             return;
         }
 
-        const lista = usuariosResp && (usuariosResp.usuarios || usuariosResp.users || Array.isArray(usuariosResp) && usuariosResp) || [];
+        const lista = usuariosResp && (usuariosResp.usuarios) || [];
 
         if (!Array.isArray(lista)) {
             setError('Respuesta de usuarios inválida');

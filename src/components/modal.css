@@ -13,10 +13,13 @@
 
 .popup-inner{
     position: relative;
-    width: 100%;
-    padding: 32px;
+    width: 80vw; /* dejar 20% de espacio en los laterales */
+    max-width: 900px;
+    padding: 24px;
     background: #fff;
     z-index: 100000;
+    border-radius: 8px;
+    overflow: auto;
 }
 
 .popup-inner .close-btn{

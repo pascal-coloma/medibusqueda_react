@@ -9,7 +9,7 @@ function Mapa({ initialCiudad } = {}) {
 
     useEffect(() => {
         if (!containerRef.current) return
-    const ciudad = (typeof initialCiudad !== 'undefined') ? String(initialCiudad) : (localStorage.getItem('ciudad') || '0')
+            const ciudad = (typeof initialCiudad !== 'undefined') ? String(initialCiudad) : (localStorage.getItem('ciudad') || '0')
         let ubicacion = { lat: -33.033604, lng: -71.532814} // valor por defecto
 
         switch (ciudad) {
