@@ -56,7 +56,7 @@ function Registro() {
         localStorage.setItem('username', JSON.stringify(data.usuario));
 
         alert('Usuario creado con exito');
-        navigate('/');
+        navigate('/login');
     }
 
     return (

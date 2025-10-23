@@ -22,13 +22,7 @@ function CardMedicamento ({ producto }) {
               <p className="card-text" id="tituloCard">Acción Terapéutica:</p>
               <p className="accion">{producto.accionTerapeutica}</p>
               <p className="card-text" id="tituloCard">Precio Fonasa:</p>
-              <p className="precio">${Math.round(producto.ofertaFonasa)}</p>
-              <p className="registro card-text" style={{ color: "white" }}>
-                {producto.registroSanitario}
-              </p>
-              <button type="submit" data-toggle="modal" data-target="#datoFarmacia" className="btn btn-info">
-                Detalle
-              </button>
+              <p className="precio" style={{fontWeight: "bold"}}>${Math.round(producto.ofertaFonasa)}</p>
             </div>
           </div>
         </form>

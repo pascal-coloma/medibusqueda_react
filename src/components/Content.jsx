@@ -30,14 +30,18 @@ function Content() {
     const medLocal = JSON.parse(localStorage.getItem("medicamentos") || "[]")
 
     const consultarApi = () => {
-
         const ultimas = JSON.parse(localStorage.getItem("busquedasrecientes"))|| [] 
-        const url = "http://54.83.108.238:3000/api/medicamento"
+        const url = "http://54.161.22.247/api/medicamento"
         const payload = {
             latitud: ubicacion.latitud,
             longitud: ubicacion.longitud,
             nombreMedicamento: medicamento.toUpperCase()
         }
+
+        if(!payload.latitud){
+            alert("Seleccione ubicacion")
+        }
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -73,7 +77,7 @@ function Content() {
         <>
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-md-2">
+                    <div className="col-md-3">
                         <h5>Ubicacion</h5>
                         <form id="formCiudad">
                             <label>

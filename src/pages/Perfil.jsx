@@ -25,8 +25,21 @@ function Perfil() {
     })
     const [fotoState, setFotoState] = useState(localStorage.getItem('profileImage') || '')
 
+    function recientes(){
+        const reciente = JSON.parse(localStorage.getItem("busquedasrecientes"))
+        
+        return (
+            <>
+                {reciente.map((item, index) => (
+                    <p key={index}>{item}</p>
+                ))}
+            </>
+        )
+    }
+
+
     // constante handlesubmit con funcion asincrona, previniendo el default
-    // utilizar fetch y await par atraer los datos de la API
+    // utilizar fetch y await para traer los datos de la API
     // foundUser = data.{llave}.find 
 
     useEffect(() => {
@@ -50,7 +63,7 @@ function Perfil() {
                             <div className="profile-left">
                                 <div className="perfilusr text-left">
                                     <img src={fotoPerfil || "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fcd%2Fac%2F8a%2Fcdac8a9d6bb1b43f52fefb4607e182ef.jpg&f=1&nofb=1&ipt=7e81db28a24a2aaf67d2f5982f50145c4ac4cf64587b301017bbff6734e8a77b"}
-                                        className="rounded-circle img-fluid hero-image" />
+                                        className="rounded-circle img-fluid hero-image " />
                                     <h2 id="welcome">Bienvenido, {JSON.parse(usuario)}</h2>
                                     <div className="profile-actions">
                                         <button type="button" className="btn btn-primary" onClick={handleLogout}>Cerrar sesión</button>
@@ -78,7 +91,8 @@ function Perfil() {
 
                             <div className="profile-right">
                                 <h4>Busquedas recientes</h4>
-
+                                <hr />
+                                {recientes()}
                             </div>
                         </div>
                     </div>

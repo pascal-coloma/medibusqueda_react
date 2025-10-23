@@ -41,12 +41,13 @@
     }
 
     .profile-left {
-        flex: 70%; 
+        flex: 60%; 
         padding: 1rem;
     }
 
     .profile-right {
-        flex: 30%; 
+        flex: 40%; 
         padding: 1rem;
+        text-align: start;
     }
 }
