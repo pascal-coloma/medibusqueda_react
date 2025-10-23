@@ -15,7 +15,7 @@ function Mapa({ initialCiudad } = {}) {
 
         switch (ciudad) {
             case '1':
-                ubicacion = { lat: -33.0513034, lng: -71.6233221 }
+                ubicacion = { lat: -33.02457, lng: -71.55183 }
                 nombreCiudad= 'Viña del Mar'
                 break
             case '2': 

@@ -37,7 +37,6 @@ function Perfil() {
         )
     }
 
-
     // constante handlesubmit con funcion asincrona, previniendo el default
     // utilizar fetch y await para traer los datos de la API
     // foundUser = data.{llave}.find 

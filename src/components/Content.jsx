@@ -14,8 +14,8 @@ function Content() {
     }
     switch (ciudad) {
         case "1":
-            ubicacion.latitud = "-33.0513034",
-                ubicacion.longitud = "-71.6233221"
+            ubicacion.latitud = "-33.02457",
+                ubicacion.longitud = "-71.55183"
             break;
         case "2":
             ubicacion.latitud = "-33.0473128",
