@@ -71,9 +71,10 @@ function Content() {
             <div className="container-fluid py-4">
                 <div className="row justify-content-center">
 
+                    {/* Formulario de búsqueda */}
                     <div className="col-md-4">
                         <div
-                            className="card border-0 shadow-sm rounded-4 p-4"
+                            className="card border-0 shadow-sm rounded-4 p-4 animate__animated animate__fadeInLeft"
                             style={{
                                 backgroundColor: "rgba(255,255,255,0.9)",
                                 backdropFilter: "blur(4px)",
@@ -83,11 +84,12 @@ function Content() {
                                 <i className="fas fa-map-marker-alt me-2"></i>Ubicación y búsqueda
                             </h5>
 
-                            <form id="formCiudad" className="text-start" style={{borderRadius: "20px"}}>
+                            <form id="formCiudad" className="text-start" style={{ borderRadius: "20px" }}>
                                 <div className="mb-3">
                                     <label
                                         htmlFor="ciudad"
-                                        className="form-label fw-semibold text-secondary">
+                                        className="form-label fw-semibold text-secondary"
+                                    >
                                         Seleccione ciudad
                                     </label>
                                     <select
@@ -96,17 +98,12 @@ function Content() {
                                         id="ciudad"
                                         name="ciudad"
                                         className="form-select form-select-lg shadow-sm border-0 rounded-3"
-                                        aria-label="Select city">
+                                        aria-label="Select city"
+                                    >
                                         <option value="0">Ciudad</option>
-                                        <option value="1" id="vinna">
-                                            Viña del Mar
-                                        </option>
-                                        <option value="2" id="valpo">
-                                            Valparaíso
-                                        </option>
-                                        <option value="3" id="chillan">
-                                            Chillán
-                                        </option>
+                                        <option value="1" id="vinna">Viña del Mar</option>
+                                        <option value="2" id="valpo">Valparaíso</option>
+                                        <option value="3" id="chillan">Chillán</option>
                                     </select>
                                 </div>
 
@@ -117,7 +114,7 @@ function Content() {
                                     >
                                         Medicamento
                                     </label>
-                                    <div className="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <div className="input-group shadow-sm rounded-3 overflow-hidden animate__animated animate__fadeInUp animate__delay-1s">
                                         <input
                                             type="text"
                                             className="form-control border-0"
@@ -135,13 +132,12 @@ function Content() {
                                                 transition: "transform 0.2s ease, box-shadow 0.3s ease",
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = "scale(1.05)"
-                                                e.currentTarget.style.boxShadow =
-                                                    "0 4px 10px rgba(0,0,0,0.2)"
+                                                e.currentTarget.style.transform = "scale(1.05)";
+                                                e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = "scale(1)"
-                                                e.currentTarget.style.boxShadow = ""
+                                                e.currentTarget.style.transform = "scale(1)";
+                                                e.currentTarget.style.boxShadow = "";
                                             }}
                                         >
                                             <i className="fas fa-search me-1"></i>Buscar
@@ -152,25 +148,31 @@ function Content() {
                         </div>
                     </div>
 
-
+                    {/* Resultados */}
                     <div className="col-md-8 mt-4 mt-md-0">
                         <div className="d-flex autowrap row g-4">
                             {medicamentos.length > 0 ? (
                                 medicamentos.map((prod, index) => (
-                                    <div key={index} className="col-sm-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div
+                                        key={index}
+                                        className="col-sm-12 col-sm-6 col-md-6 col-lg-6 animate__animated animate__fadeInUp"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
                                         <CardMedicamento producto={prod} />
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center text-muted mt-5">
+                                <div className="text-center text-muted mt-5 animate__animated animate__fadeInUp">
                                     <i className="fas fa-prescription-bottle-alt fa-2x mb-3"></i>
                                     <p>Busca un medicamento para ver los resultados aquí.</p>
                                 </div>
                             )}
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </>
     )
 }

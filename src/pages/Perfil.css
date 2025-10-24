@@ -1,58 +1,60 @@
-.container{
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    box-sizing: border-box;
+.card {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.profile-row {
-    display: block;
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-#welcome{
-    color: rgb(255, 255, 255);
+h3, h5 {
+    color: #0d6efd; /* color principal */
 }
 
-.perfilusr {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+.btn-primary, .btn-secondary {
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.perfilusr .hero-image {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
+.btn-primary:hover, .btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.profile-actions {
-    display: flex;
-    gap: 0.5rem;
+.list-group-item {
+    background-color: transparent;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
 }
 
-.profile-left,
-.profile-right {
-    width: 100%;
-    color: rgb(73, 72, 72);
+
+.editar-perfil-card {
+    max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-@media (min-width: 1024px) {
-    .profile-row {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+.editar-perfil-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
 
-    .profile-left {
-        flex: 60%; 
-        padding: 1rem;
-    }
+.editar-perfil-card .form-label {
+    color: #0d6efd;
+}
 
-    .profile-right {
-        flex: 40%; 
-        padding: 1rem;
-        text-align: start;
-    }
+.editar-perfil-card .btn-primary, 
+.editar-perfil-card .btn-secondary {
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.editar-perfil-card .btn-primary:hover, 
+.editar-perfil-card .btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }

@@ -1,15 +1,27 @@
-import './modal.css'
+import { createPortal } from 'react-dom';
+import './modal.css';
 
-//Este popup lo oinvocas y dentro de la pagina donde lo estes invocando lo puedes rellenar con lo que quieras
+function Popup({ trigger, children, onClose }) {
+  if (!trigger) return null;
 
-function Popup(prop) {
-    return (prop.trigger) ? (
-      <div  className="popup">
-        <div className="popup-inner">
-        {prop.children}
-        </div>
+  const handleBackgroundClick = (e) => {
+    if (e.target.classList.contains('popup')) {
+      onClose && onClose();
+    }
+  }
+
+  return createPortal(
+    <div className="popup" onClick={handleBackgroundClick}>
+      <div className="popup-inner">
+        {children}
+        <button 
+          className="btn-close position-absolute top-0 end-0 m-3" 
+          onClick={onClose}>
+        </button>
       </div>
-    ): ""; //esto es un if donde si trigger es true se muestra el popup y si es false no se muestra nada
+    </div>,
+    document.body // <-- renderiza el modal directamente en el body
+  )
 }
 
-export default Popup
+export default Popup;

@@ -17,7 +17,7 @@ function NavBar() {
         <nav
             className="navbar navbar-expand-lg fixed-top shadow-sm"
             style={{
-                backdropFilter: "blur(10px)",  // efecto blur moderno
+                backdropFilter: "blur(10px)",  
                 backgroundColor: "rgba(255,255,255,0.75)",
                 transition: "all 0.3s ease",
                 zIndex: 1030
@@ -35,7 +35,7 @@ function NavBar() {
                     <span className="fw-bold">MediBusqueda</span>
                 </a>
 
-                {/* Botón responsive */}
+                
                 <button
                     className="navbar-toggler"
                     type="button"

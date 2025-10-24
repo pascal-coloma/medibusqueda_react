@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import "../pages/Perfil.css"
 
 function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, onCancel }) {
     const [loading, setLoading] = useState(true)
@@ -45,20 +46,31 @@ function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, on
     if (loading) return null
 
     return (
-        <div className="container py-4" style={{ maxWidth: 800 }}>
+        <div className="editar-perfil-card mx-auto p-4 shadow rounded-4 bg-light">
+            <h4 className="text-center fw-bold mb-4">Editar perfil</h4>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label className="form-label">Nombre de usuario</label>
-                    <input className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <label className="form-label fw-semibold">Nombre de usuario</label>
+                    <input
+                        className="form-control"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Ingrese su nombre"
+                    />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">URL de la foto de perfil (opcional)</label>
-                    <input className="form-control" value={profileImage} onChange={(e) => setProfileImage(e.target.value)} placeholder="https://..." />
+                    <label className="form-label fw-semibold">URL de la foto de perfil (opcional)</label>
+                    <input
+                        className="form-control"
+                        value={profileImage}
+                        onChange={(e) => setProfileImage(e.target.value)}
+                        placeholder="https://..."
+                    />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Ciudad</label>
+                    <label className="form-label fw-semibold">Ciudad</label>
                     <select className="form-select" value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
                         <option value="1">Viña del mar</option>
                         <option value="2">Valparaiso</option>
@@ -68,7 +80,7 @@ function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, on
 
                 {error && <div className="text-danger mb-3">{error}</div>}
 
-                <div className="d-flex gap-2">
+                <div className="d-flex gap-2 justify-content-end">
                     <button className="btn btn-primary" type="submit">Guardar</button>
                     <button className="btn btn-secondary" type="button" onClick={onCancel}>Cancelar</button>
                 </div>
