@@ -1,0 +1,10 @@
+.card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.2s;
+}
+
+.card-title, .card-text {
+  white-space: nowrap; 
+  overflow: hidden;    
+  text-overflow: ellipsis; 
+}

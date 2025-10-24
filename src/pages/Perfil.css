@@ -10,6 +10,10 @@
     display: block;
 }
 
+#welcome{
+    color: rgb(255, 255, 255);
+}
+
 .perfilusr {
     display: flex;
     flex-direction: column;
@@ -31,6 +35,7 @@
 .profile-left,
 .profile-right {
     width: 100%;
+    color: rgb(73, 72, 72);
 }
 
 @media (min-width: 1024px) {

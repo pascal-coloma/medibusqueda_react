@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 function CardMedicamento ({ producto }) {
   return (
     <>
-      <div className="col-md-4 mb-4">
+      <div className="card h-100 shadow-sm">
         <form className="medicamentosJs border-info" id="tarjetasMeds">
           <div className="card bg-light">
             <div className="card-body text-black">
