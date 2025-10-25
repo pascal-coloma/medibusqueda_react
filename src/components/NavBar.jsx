@@ -24,7 +24,7 @@ function NavBar() {
             }}
         >
             <div className="container">
-                {/* Logo y marca */}
+                
                 <a href="/" className="navbar-brand d-flex align-items-center">
                     <img
                         src="/magnifying-glass-or-search-icon-magnifier-glass-sign-vector-3814876275.jpg"
@@ -48,7 +48,7 @@ function NavBar() {
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
-                {/* Links */}
+                
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">

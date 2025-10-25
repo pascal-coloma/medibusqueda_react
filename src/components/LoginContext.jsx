@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import PropTypes from "prop-types";
 
 export const LoginContext = createContext()
 
@@ -10,27 +11,30 @@ export const LoginContext = createContext()
 // Contexto -> interaccion de informacion entre componentes: componente global que maneja los datos en los distintos almacenamientos
 
 
-export function LoginProvider({children}){
-    const [usuario, setUsuario] = useState(null)
+export function LoginProvider({ children }) {
+    const [usuario, setUsuario] = useState("")
 
     const login = (user) => {
-        localStorage.setItem("user", user)
-        setUsuario(user)
+
+        localStorage.setItem("username", user);
+        setUsuario(user);
+
     }
 
     const logout = () => {
+
         localStorage.removeItem("username")
         localStorage.removeItem("profileImage")
         localStorage.removeItem("ciudad")
-        localStorage.removeItem("busquedasrecientes")
-        setUsuario(null)
+        localStorage.removeItem("busquedasRecientes")
+        setUsuario("")
+
     }
 
     return (
-        <LoginContext.Provider value={{usuario, login, logout}}>
+        <LoginContext.Provider value={{ usuario, login, logout }}>
             {children}
         </LoginContext.Provider>
-        
     )
 
 }
