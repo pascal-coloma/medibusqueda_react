@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar";
 import { describe, expect, it, vi } from "vitest"
 import { render, screen, fireEvent } from "@testing-library/react"
 import { LoginContext, LoginProvider } from "../components/LoginContext";
+import { MemoryRouter } from "react-router-dom";
 
 // Test de renderizado de la navbar 
 describe('Render Navbar', () => {
@@ -29,11 +30,11 @@ describe('Render Navbar', () => {
         expect(screen.getByText('Cerrar Sesión')).toBeInTheDocument()
 
     })
-    it('Check boton "Iniciar sesion" con localStorage vacio',() =>{
+    it('Check boton "Iniciar sesion" con localStorage vacio', () => {
         localStorage.clear()
 
         render(
-            <LoginContext.Provider value={{usuario: "", login: mockLogin, logout: mockLogout}}>
+            <LoginContext.Provider value={{ usuario: "", login: mockLogin, logout: mockLogout }}>
                 <NavBar />
             </LoginContext.Provider>
         )
@@ -43,7 +44,7 @@ describe('Render Navbar', () => {
     it('check boton cierre de sesion', () => {
         localStorage.setItem("username", "Anakin");
         render(
-            <LoginContext.Provider value={{usuario: "Anakin", login: mockLogin, logout:mockLogout}}>
+            <LoginContext.Provider value={{ usuario: "Anakin", login: mockLogin, logout: mockLogout }}>
                 <NavBar />
             </LoginContext.Provider>
 
@@ -53,4 +54,16 @@ describe('Render Navbar', () => {
 
         localStorage.clear();
     })
+
+    it('enlaces de navegacion presentes y correcta redireccion', () => {
+        render(
+            <LoginContext.Provider value={{usuario: "Anakin", login:mockLogin, logout:mockLogout}}>
+                <NavBar />
+            </LoginContext.Provider>
+
+        )
+        expect(screen.getByText(/Inicio/i)).toBeInTheDocument();
+        expect(screen.getByText(/Perfil/i)).toBeInTheDocument();
+    })
+    
 })
