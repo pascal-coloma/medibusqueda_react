@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { obtainUsers } from "../Api/ApiUsers";
+import { obtainUsers, registrarUsuario } from "../Api/ApiUsers";
 import { useForm } from "react-hook-form";
 
 function Registro() {
@@ -11,7 +11,7 @@ function Registro() {
     const [showPopup, setShowPopup] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
-    const watchedPassword = watch('contrasenna');
+    const watchedPassword = watch('clave');
 
     const registrar = async (data) => {
         setError("");
@@ -29,43 +29,83 @@ function Registro() {
             return;
         }
 
-        if (usuarioExistente(usuarios.usuarios, data)) {
-            setError('El usuario ya existe');
-            return;
-        }
-
         // Guardar usuario y mostrar popup
-        localStorage.setItem('username', JSON.stringify(data.usuario));
-        setShowPopup(true);
+        try {
+            await registrarUsuario({
+                rut: data.rut,
+                dv_rut: data.dv_rut,
+                pnombre: data.pnombre,
+                snombre: data.snombre,
+                apaterno: data.apaterno,
+                amaterno: data.amaterno,
+                correo: data.correo,
+                clave: data.clave
+            });
+            setShowPopup(true);
 
-        setTimeout(() => {
-            navigate('/login');
-        }, 2000);
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+        } catch (err){
+            console.error(err);
+            setError("Error al registrar usuario")
+        }
+        
     };
 
     const validarFormulario = (data) => {
-        if (data.usuario.length < 5) {
-            setError("El nombre de usuario debe tener al menos 5 caracteres");
+        // Validar RUT numérico
+        if (!/^[0-9]{7,8}$/.test(data.rut)) {
+            setError("El RUT debe contener solo números (7 u 8 dígitos)");
             return false;
         }
-        if (data.contrasenna !== data.contra2) {
-            setError("Las contraseñas no coinciden");
+
+        // Validar dígito verificador
+        if (!/^[0-9Kk]{1}$/.test(data.dv_rut)) {
+            setError("El dígito verificador debe ser un número o la letra K");
             return false;
         }
-        if (data.ciudad === '0') {
-            setError("Debe seleccionar una ciudad");
+
+        // Validar primer nombre
+        if (!data.pnombre || data.pnombre.trim().length < 2) {
+            setError("El primer nombre debe tener al menos 2 caracteres");
             return false;
         }
+
+        // Validar apellidos
+        if (!data.apaterno || data.apaterno.trim().length < 2) {
+            setError("Debe ingresar su apellido paterno");
+            return false;
+        }
+        if (!data.amaterno || data.amaterno.trim().length < 2) {
+            setError("Debe ingresar su apellido materno");
+            return false;
+        }
+
+        // Validar correo electrónico
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.correo)) {
+            setError("Debe ingresar un correo electrónico válido");
+            return false;
+        }
+
+        // Validar contraseña
+        if (!data.clave || data.clave.length < 4) {
+            setError("La contraseña debe tener al menos 4 caracteres");
+            return false;
+        }
+
+        // Validar términos
         if (!data.acceptTerms) {
             setError("Debe aceptar los términos y condiciones");
             return false;
         }
+
+        // Si todo es válido
+        setError("");
         return true;
     };
 
-    const usuarioExistente = (lista, data) => {
-        return lista.find(u => u.nombre === data.usuario || u.correo === data.email);
-    };
 
     return (
         <>
@@ -74,98 +114,216 @@ function Registro() {
             <div
                 className="d-flex justify-content-center align-items-center py-5"
                 style={{
-                    backgroundColor: '#caf8f2',
-                    minHeight: '100vh',
+                    backgroundColor: "#caf8f2",
+                    minHeight: "100vh",
                     filter: showPopup ? "blur(5px)" : "none",
                     transition: "filter 0.3s"
                 }}
             >
-                <div className="card p-4 p-md-5 shadow-lg rounded-4 animate__animated animate__fadeInUp" style={{ maxWidth: 500, width: '100%' }}>
-                    <h2 className="text-center mb-4 text-primary fw-bold">Registro</h2>
+                <div
+                    className="card p-4 p-md-5 shadow-lg rounded-4 animate__animated animate__fadeInUp"
+                    style={{ maxWidth: 500, width: "100%" }}
+                >
+                    <h2 className="text-center mb-4 text-primary fw-bold">Registro de Usuario</h2>
 
                     <form onSubmit={handleSubmit(registrar)}>
-                        {/* Usuario */}
+                        {/* RUT y DV */}
                         <div className="mb-3">
-                            <label htmlFor="userId" className="form-label fw-semibold">Nombre de usuario</label>
-                            <input
-                                type="text"
-                                id="userId"
-                                className="form-control rounded-pill"
-                                placeholder="Ingrese su nombre de usuario"
-                                {...register('usuario', { required: true })}
-                            />
-                            {errors.usuario && <small className="text-danger">El nombre es obligatorio</small>}
+                            <label htmlFor="rut" className="form-label fw-semibold">
+                                RUT
+                            </label>
+
+                            <div className="d-flex align-items-center gap-2">
+                                <input
+                                    type="text"
+                                    id="rut"
+                                    className="form-control rounded-pill"
+                                    placeholder="Ej: 12345678"
+                                    maxLength={8}
+                                    style={{ flex: 1 }}
+                                    {...register("rut", { required: true, pattern: /^[0-9]{7,8}$/ })}
+                                />
+
+                                <span className="fw-bold">-</span>
+
+                                <input
+                                    type="text"
+                                    id="dv_rut"
+                                    className="form-control rounded-pill text-uppercase text-center"
+                                    placeholder="DV"
+                                    maxLength={1}
+                                    style={{ width: "60px" }}
+                                    {...register("dv_rut", { required: true, pattern: /^[0-9Kk]{1}$/ })}
+                                />
+                            </div>
+
+                            {errors.rut && (
+                                <small className="text-danger d-block mt-1">
+                                    Ingrese un RUT válido (solo números)
+                                </small>
+                            )}
+                            {errors.dv_rut && (
+                                <small className="text-danger d-block mt-1">
+                                    Dígito verificador inválido
+                                </small>
+                            )}
                         </div>
 
-                        {/* Email */}
+
+                        {/* Primer Nombre */}
                         <div className="mb-3">
-                            <label htmlFor="correo" className="form-label fw-semibold">Email</label>
+                            <label htmlFor="pnombre" className="form-label fw-semibold">
+                                Primer nombre
+                            </label>
+                            <input
+                                type="text"
+                                id="pnombre"
+                                className="form-control rounded-pill"
+                                placeholder="Ingrese su primer nombre"
+                                {...register("pnombre", { required: true })}
+                            />
+                            {errors.pnombre && (
+                                <small className="text-danger">El primer nombre es obligatorio</small>
+                            )}
+                        </div>
+
+                        {/* Segundo Nombre (opcional) */}
+                        <div className="mb-3">
+                            <label htmlFor="snombre" className="form-label fw-semibold">
+                                Segundo nombre
+                            </label>
+                            <input
+                                type="text"
+                                id="snombre"
+                                className="form-control rounded-pill"
+                                placeholder="(opcional)"
+                                {...register("snombre")}
+                            />
+                        </div>
+
+                        {/* Apellido Paterno */}
+                        <div className="mb-3">
+                            <label htmlFor="apaterno" className="form-label fw-semibold">
+                                Apellido paterno
+                            </label>
+                            <input
+                                type="text"
+                                id="apaterno"
+                                className="form-control rounded-pill"
+                                placeholder="Ingrese su apellido paterno"
+                                {...register("apaterno", { required: true })}
+                            />
+                            {errors.apaterno && (
+                                <small className="text-danger">El apellido paterno es obligatorio</small>
+                            )}
+                        </div>
+
+                        {/* Apellido Materno */}
+                        <div className="mb-3">
+                            <label htmlFor="amaterno" className="form-label fw-semibold">
+                                Apellido materno
+                            </label>
+                            <input
+                                type="text"
+                                id="amaterno"
+                                className="form-control rounded-pill"
+                                placeholder="Ingrese su apellido materno"
+                                {...register("amaterno", { required: true })}
+                            />
+                            {errors.amaterno && (
+                                <small className="text-danger">El apellido materno es obligatorio</small>
+                            )}
+                        </div>
+
+                        {/* Correo */}
+                        <div className="mb-3">
+                            <label htmlFor="correo" className="form-label fw-semibold">
+                                Correo electrónico
+                            </label>
                             <input
                                 type="email"
                                 id="correo"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su email"
-                                {...register('email', { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })}
+                                {...register("correo", {
+                                    required: true,
+                                    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                                })}
                             />
-                            {errors.email && <small className="text-danger">Email inválido</small>}
-                            <div className="form-text">Nunca compartiremos su correo electrónico con nadie más.</div>
+                            {errors.correo && <small className="text-danger">Correo inválido</small>}
+                            <div className="form-text">
+                                Nunca compartiremos su correo con nadie más.
+                            </div>
                         </div>
 
-                        {/* Contraseña */}
+                        {/* Clave */}
                         <div className="mb-3">
-                            <label htmlFor="password1" className="form-label fw-semibold">Contraseña</label>
+                            <label htmlFor="clave" className="form-label fw-semibold">
+                                Contraseña
+                            </label>
                             <input
                                 type="password"
-                                id="password1"
+                                id="clave"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su contraseña"
-                                {...register('contrasenna', { required: true, minLength: 4 })}
+                                {...register("clave", { required: true, minLength: 4 })}
                             />
-                            {errors.contrasenna && <small className="text-danger">La contraseña debe tener al menos 4 caracteres</small>}
+                            {errors.clave && (
+                                <small className="text-danger">
+                                    La contraseña debe tener al menos 4 caracteres
+                                </small>
+                            )}
                         </div>
-
-                        {/* Confirmar Contraseña */}
                         <div className="mb-3">
-                            <label htmlFor="password2" className="form-label fw-semibold">Repetir contraseña</label>
+                            <label htmlFor="confirmarClave" className="form-label fw-semibold">
+                                Confirmar contraseña
+                            </label>
                             <input
                                 type="password"
-                                id="password2"
+                                id="confirmarClave"
                                 className="form-control rounded-pill"
-                                placeholder="Confirme su contraseña"
-                                {...register('contra2', { required: true, validate: (val) => val === watchedPassword })}
+                                placeholder="Repita su contraseña"
+                                {...register("confirmarClave", {
+                                    required: true,
+                                    validate: value => value === watchedPassword || "Las contraseñas no coinciden"
+                                })}
                             />
-                            {errors.contra2 && <small className="text-danger">Las contraseñas no coinciden</small>}
+                            {errors.confirmarClave && (
+                                <small className="text-danger">{errors.confirmarClave.message}</small>
+                            )}
                         </div>
-
-                        {/* Ciudad */}
-                        <div className="mb-3">
-                            <label htmlFor="ciudad" className="form-label fw-semibold">Ciudad</label>
-                            <select id="ciudad" className="form-select rounded-pill" {...register('ciudad', { required: true })}>
-                                <option value="0">Seleccione una ciudad</option>
-                                <option value="1">Viña del Mar</option>
-                                <option value="2">Valparaiso</option>
-                                <option value="3">Chillan</option>
-                            </select>
-                            {errors.ciudad && <small className="text-danger">Debe seleccionar una ciudad</small>}
-                        </div>
-
-                        {/* Términos */}
+                        {/* Aceptar términos */}
                         <div className="mb-4 form-check">
                             <input
                                 type="checkbox"
-                                id="exampleCheck1"
+                                id="acceptTerms"
                                 className="form-check-input"
-                                {...register('acceptTerms')}
+                                {...register("acceptTerms", { required: true })}
                             />
-                            <label className="form-check-label fw-semibold" htmlFor="exampleCheck1">
-                                Acepto los <a href="#" className="text-decoration-none">términos y condiciones</a>
+                            <label
+                                className="form-check-label fw-semibold"
+                                htmlFor="acceptTerms"
+                            >
+                                Acepto los{" "}
+                                <a href="#" className="text-decoration-none">
+                                    términos y condiciones
+                                </a>
                             </label>
-                            {errors.acceptTerms && <div><small className="text-danger">Debe aceptar los términos y condiciones</small></div>}
+                            {errors.acceptTerms && (
+                                <div>
+                                    <small className="text-danger">
+                                        Debe aceptar los términos y condiciones
+                                    </small>
+                                </div>
+                            )}
                         </div>
 
                         {/* Botón */}
-                        <button type="submit" className="btn btn-primary w-100 rounded-pill fw-bold shadow-sm">
-                            Enviar
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100 rounded-pill fw-bold shadow-sm"
+                        >
+                            Registrar
                         </button>
 
                         {error && <div className="mt-3 text-danger text-center">{error}</div>}
@@ -175,8 +333,14 @@ function Registro() {
 
             {/* Modal popup */}
             {showPopup && (
-                <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}>
-                    <div className="bg-white p-4 rounded-4 shadow-lg text-center animate__animated animate__fadeInDown" style={{ maxWidth: 400, width: "90%" }}>
+                <div
+                    className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                    style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+                >
+                    <div
+                        className="bg-white p-4 rounded-4 shadow-lg text-center animate__animated animate__fadeInDown"
+                        style={{ maxWidth: 400, width: "90%" }}
+                    >
                         <h4 className="text-success mb-3">¡Registro exitoso!</h4>
                         <p>Serás redirigido al inicio de sesión...</p>
                         <div className="spinner-border text-primary mt-3" role="status">
@@ -185,6 +349,7 @@ function Registro() {
                     </div>
                 </div>
             )}
+
 
             <Footer />
         </>

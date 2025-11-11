@@ -15,18 +15,19 @@ export function LoginProvider({ children }) {
 
     const login = (user) => {
 
-        localStorage.setItem("username", user);
+        localStorage.setItem("correo", user);
         setUsuario(user);
 
     }
 
     const logout = () => {
 
-        localStorage.removeItem("username")
-        localStorage.removeItem("profileImage")
-        localStorage.removeItem("ciudad")
-        localStorage.removeItem("busquedasRecientes")
-        setUsuario("")
+        logout();
+        localStorage.removeItem("correo");
+        localStorage.removeItem("nombre");
+        localStorage.removeItem("profileImage");
+        localStorage.removeItem("busquedasRecientes");
+        navegador("/login");
 
     }
 

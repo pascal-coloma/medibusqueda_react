@@ -15,7 +15,7 @@ function NavBar() {
 
     return (
         <nav
-            className="navbar navbar-expand-lg fixed-top shadow-sm"
+            className="navbar navbar-light navbar-expand-lg fixed-top shadow-sm"
             style={{
                 backdropFilter: "blur(10px)",  
                 backgroundColor: "rgba(255,255,255,0.75)",

@@ -69,7 +69,8 @@ function Perfil() {
                                         className="rounded-circle shadow mb-3"
                                         style={{ width: "130px", height: "130px", objectFit: "cover" }}
                                     />
-                                    <h3 className="fw-bold mb-1">Bienvenido, {JSON.parse(usuario)}</h3>
+                                    <h3 className="fw-bold mb-1">Bienvenido, {localStorage.getItem("nombre") || "Usuario"}</h3>
+                                    <p className="text-muted">{localStorage.getItem("correo")}</p>
                                     <div className="d-flex gap-2 mt-3">
                                         <button className="btn btn-primary" onClick={handleLogout}>
                                             Cerrar sesión
