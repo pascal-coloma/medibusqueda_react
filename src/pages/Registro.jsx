@@ -31,6 +31,13 @@ function Registro() {
 
         // Guardar usuario y mostrar popup
         try {
+            const existe = usuarios.some(usuario => usuario.rut === data.rut);
+
+            if (existe) {
+                setError("RUT ya registrado")
+                setShowPopup(false);
+                return;
+            }
             await registrarUsuario({
                 rut: data.rut,
                 dv_rut: data.dv_rut,
@@ -41,16 +48,17 @@ function Registro() {
                 correo: data.correo,
                 clave: data.clave
             });
+
             setShowPopup(true);
 
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
-        } catch (err){
+        } catch (err) {
             console.error(err);
             setError("Error al registrar usuario")
         }
-        
+
     };
 
     const validarFormulario = (data) => {
@@ -128,9 +136,9 @@ function Registro() {
 
                     <form onSubmit={handleSubmit(registrar)}>
                         {/* RUT y DV */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="rut" className="form-label fw-semibold">
-                                RUT
+                                RUT (Sin puntos ni guion)
                             </label>
 
                             <div className="d-flex align-items-center gap-2">
@@ -171,7 +179,7 @@ function Registro() {
 
 
                         {/* Primer Nombre */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="pnombre" className="form-label fw-semibold">
                                 Primer nombre
                             </label>
@@ -188,7 +196,7 @@ function Registro() {
                         </div>
 
                         {/* Segundo Nombre (opcional) */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="snombre" className="form-label fw-semibold">
                                 Segundo nombre
                             </label>
@@ -202,7 +210,7 @@ function Registro() {
                         </div>
 
                         {/* Apellido Paterno */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="apaterno" className="form-label fw-semibold">
                                 Apellido paterno
                             </label>
@@ -219,7 +227,7 @@ function Registro() {
                         </div>
 
                         {/* Apellido Materno */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="amaterno" className="form-label fw-semibold">
                                 Apellido materno
                             </label>
@@ -236,7 +244,7 @@ function Registro() {
                         </div>
 
                         {/* Correo */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="correo" className="form-label fw-semibold">
                                 Correo electrónico
                             </label>
@@ -257,7 +265,7 @@ function Registro() {
                         </div>
 
                         {/* Clave */}
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="clave" className="form-label fw-semibold">
                                 Contraseña
                             </label>
@@ -274,7 +282,7 @@ function Registro() {
                                 </small>
                             )}
                         </div>
-                        <div className="mb-3">
+                        <div className="mb-3 text-start">
                             <label htmlFor="confirmarClave" className="form-label fw-semibold">
                                 Confirmar contraseña
                             </label>

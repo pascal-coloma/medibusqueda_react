@@ -22,40 +22,31 @@ function Login() {
             return;
         }
 
-        let usuariosResp;
+        let usuarios;
         try {
-            usuariosResp = await obtainUsers();
+            usuarios = await obtainUsers();
         } catch (err) {
             console.error(err);
             setError("Error al obtener usuarios. Intente más tarde.");
             return;
         }
+        try {
+            const clave = usuarios.some(usuario => usuario.clave === inputPass)
+            if (clave) {
+                setTimeout(() => {
+                    navigate('/perfil');
+                }, 2000);
+            } else{
+                setError("Credenciales incorrectas")
+            }
 
-        const lista = usuariosResp && (usuariosResp.usuarios || usuariosResp) || [];
-
-        if (!Array.isArray(lista)) {
-            setError("Respuesta de usuarios inválida");
-            return;
+        } catch (e) {
+            console.err(e);
+            setError("Error al registrar usuario")
         }
 
-        // Buscar por correo y clave
-        const usuarioEncontrado = lista.find(
-            (u) =>
-                u.correo?.toLowerCase() === inputCorreo.toLowerCase() &&
-                u.clave === inputPass
-        );
 
-        if (!usuarioEncontrado) {
-            setError("Correo o contraseña incorrectos");
-            return;
-        }
 
-        // Guardamos datos relevantes en localStorage
-        alert("Inicio de sesión exitoso");
-        localStorage.setItem("correo", usuarioEncontrado.correo);
-        localStorage.setItem("nombre", usuarioEncontrado.pnombre);
-        localStorage.removeItem("busquedasrecientes");
-        navigate("/perfil");
     };
 
     return (

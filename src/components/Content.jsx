@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import CardMedicamento from "./CardMedicamento"
+import { traerCiudades } from "../Api/ApiUsers"
+import CiudadSelect from "./CiudadSelect"
 
 function Content() {
     const [medicamento, setMedicamento] = useState("")
@@ -66,6 +68,8 @@ function Content() {
         localStorage.setItem("medicamentos", JSON.stringify(nuevosMedicamentos))
     }
 
+    
+
     return (
         <>
             <div className="container-fluid py-4">
@@ -85,28 +89,8 @@ function Content() {
                             </h5>
 
                             <form id="formCiudad" className="text-start" style={{ borderRadius: "20px" }}>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="ciudad"
-                                        className="form-label fw-semibold text-secondary"
-                                    >
-                                        Seleccione ciudad
-                                    </label>
-                                    <select
-                                        value={ciudad}
-                                        onChange={(e) => setCiudad(e.target.value)}
-                                        id="ciudad"
-                                        name="ciudad"
-                                        className="form-select form-select-lg shadow-sm border-0 rounded-3"
-                                        aria-label="Select city"
-                                    >
-                                        <option value="0">Ciudad</option>
-                                        <option value="1" id="vinna">Viña del Mar</option>
-                                        <option value="2" id="valpo">Valparaíso</option>
-                                        <option value="3" id="chillan">Chillán</option>
-                                    </select>
-                                </div>
-
+                                <CiudadSelect value={ciudad} onChange={setCiudad} />
+                            
                                 <div className="mb-3">
                                     <label
                                         htmlFor="inpMedicamento"
@@ -165,6 +149,7 @@ function Content() {
                                 <div className="text-center text-muted mt-5 animate__animated animate__fadeInUp">
                                     <i className="fas fa-prescription-bottle-alt fa-2x mb-3"></i>
                                     <p>Busca un medicamento para ver los resultados aquí.</p>
+                                    <button onClick={traerCiudades}>Ciudades</button>
                                 </div>
                             )}
                         </div>
