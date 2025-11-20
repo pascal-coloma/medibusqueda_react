@@ -34,13 +34,3 @@ export async function registrarUsuario(userData) {
     }
 }
 
-export async function traerCiudades() {
-    try {
-        const { data } = await api.get("/ciudad");
-        
-        return data;
-    } catch (error) {
-        handleError(error);
-        return [];
-    }
-}

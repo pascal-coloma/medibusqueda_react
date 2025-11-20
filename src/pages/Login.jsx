@@ -33,6 +33,7 @@ function Login() {
         try {
             const clave = usuarios.some(usuario => usuario.clave === inputPass)
             if (clave) {
+                localStorage.setItem("correo", inputCorreo);
                 setTimeout(() => {
                     navigate('/perfil');
                 }, 2000);
@@ -44,9 +45,6 @@ function Login() {
             console.err(e);
             setError("Error al registrar usuario")
         }
-
-
-
     };
 
     return (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { traerCiudades } from "../Api/ApiUsers";
+import { traerCiudades } from "../Api/ApiCiudad.js";
 
 export default function CiudadSelect({ value, onChange }) {
     const [ciudades, setCiudades] = useState([]);
@@ -27,12 +27,12 @@ export default function CiudadSelect({ value, onChange }) {
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
             >
-                <option value="">Seleccione una ciudad</option>
+                <option value="0">Seleccione una ciudad</option>
                 {ciudades.map((c) => (
                     <option key={c.id_ciudad} value={c.id_ciudad}>
                         {c.nombre}
                     </option>
-                ))}
+                ))} 
             </select>
         </div>
     );

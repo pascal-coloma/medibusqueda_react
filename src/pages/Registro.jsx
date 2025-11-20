@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { obtainUsers, registrarUsuario } from "../Api/ApiUsers";
 import { useForm } from "react-hook-form";
+import CiudadSelect from "../components/CiudadSelect";
 
 function Registro() {
     const navigate = useNavigate();
@@ -46,7 +47,8 @@ function Registro() {
                 apaterno: data.apaterno,
                 amaterno: data.amaterno,
                 correo: data.correo,
-                clave: data.clave
+                clave: data.clave,
+                id_ciudad: data.ciudad
             });
 
             setShowPopup(true);
@@ -67,19 +69,16 @@ function Registro() {
             setError("El RUT debe contener solo números (7 u 8 dígitos)");
             return false;
         }
-
         // Validar dígito verificador
         if (!/^[0-9Kk]{1}$/.test(data.dv_rut)) {
             setError("El dígito verificador debe ser un número o la letra K");
             return false;
         }
-
         // Validar primer nombre
         if (!data.pnombre || data.pnombre.trim().length < 2) {
             setError("El primer nombre debe tener al menos 2 caracteres");
             return false;
         }
-
         // Validar apellidos
         if (!data.apaterno || data.apaterno.trim().length < 2) {
             setError("Debe ingresar su apellido paterno");
@@ -89,26 +88,26 @@ function Registro() {
             setError("Debe ingresar su apellido materno");
             return false;
         }
-
         // Validar correo electrónico
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(data.correo)) {
             setError("Debe ingresar un correo electrónico válido");
             return false;
         }
-
         // Validar contraseña
         if (!data.clave || data.clave.length < 4) {
             setError("La contraseña debe tener al menos 4 caracteres");
             return false;
         }
-
         // Validar términos
         if (!data.acceptTerms) {
             setError("Debe aceptar los términos y condiciones");
             return false;
         }
-
+        if (!data.ciudad){
+            setError("Seleccione una ciudad");
+            return false;
+        }
         // Si todo es válido
         setError("");
         return true;
@@ -300,6 +299,7 @@ function Registro() {
                                 <small className="text-danger">{errors.confirmarClave.message}</small>
                             )}
                         </div>
+                        <CiudadSelect />
                         {/* Aceptar términos */}
                         <div className="mb-4 form-check">
                             <input
