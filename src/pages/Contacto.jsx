@@ -9,6 +9,7 @@ function capitalizarNombreCompleto(str) {
     if (!str) return ""
     return str
         .split(" ")
+        .filter(Boolean)
         .map(
             (palabra) =>
                 palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()
@@ -16,15 +17,37 @@ function capitalizarNombreCompleto(str) {
         .join(" ")
 }
 
-function dividirNombre(nombreCompleto) {
-    if (!nombreCompleto) return { nombre: "", apellidos: "" }
-    const partes = nombreCompleto.trim().split(" ")
-    if (partes.length === 1) {
-        return { nombre: capitalizarNombreCompleto(partes[0]), apellidos: "" }
+// Intenta primero pnombre/snombre/apaterno/amaterno.
+// Si no existen, cae a usuario.nombre.
+function obtenerNombreYApellidosDesdeUsuario(usuario) {
+    if (!usuario) return { nombre: "", apellidos: "" }
+
+    const tienePartes =
+        usuario.pnombre || usuario.snombre || usuario.apaterno || usuario.amaterno
+
+    if (tienePartes) {
+        const nombres = [usuario.pnombre, usuario.snombre].filter(Boolean).join(" ")
+        const apellidos = [usuario.apaterno, usuario.amaterno].filter(Boolean).join(" ")
+        return {
+            nombre: capitalizarNombreCompleto(nombres),
+            apellidos: capitalizarNombreCompleto(apellidos),
+        }
     }
-    const nombre = capitalizarNombreCompleto(partes[0])
-    const apellidos = capitalizarNombreCompleto(partes.slice(1).join(" "))
-    return { nombre, apellidos }
+
+    if (usuario.nombre) {
+        const partes = usuario.nombre.trim().split(" ").filter(Boolean)
+        if (partes.length === 1) {
+            return {
+                nombre: capitalizarNombreCompleto(partes[0]),
+                apellidos: "",
+            }
+        }
+        const nombre = capitalizarNombreCompleto(partes[0])
+        const apellidos = capitalizarNombreCompleto(partes.slice(1).join(" "))
+        return { nombre, apellidos }
+    }
+
+    return { nombre: "", apellidos: "" }
 }
 
 function Contacto() {
@@ -44,13 +67,13 @@ function Contacto() {
     useEffect(() => {
         if (!usuario) return
 
-        const { nombre, apellidos } = dividirNombre(usuario.nombre || "")
+        const { nombre, apellidos } = obtenerNombreYApellidosDesdeUsuario(usuario)
 
         setFormData((prev) => ({
             ...prev,
             nombre: prev.nombre.trim() ? prev.nombre : nombre,
             apellidos: prev.apellidos.trim() ? prev.apellidos : apellidos,
-            email: prev.email.trim() ? prev.email : usuario.correo || "",
+            email: prev.email.trim() ? prev.email : (usuario.correo || ""),
         }))
     }, [usuario])
 
@@ -78,10 +101,22 @@ function Contacto() {
 
     const handleCloseModal = () => {
         setModal(false)
+
+        let nombreBase = ""
+        let apellidosBase = ""
+        let emailBase = ""
+
+        if (usuario) {
+            const datos = obtenerNombreYApellidosDesdeUsuario(usuario)
+            nombreBase = datos.nombre
+            apellidosBase = datos.apellidos
+            emailBase = usuario.correo || ""
+        }
+
         setFormData({
-            nombre: usuario ? dividirNombre(usuario.nombre || "").nombre : "",
-            apellidos: usuario ? dividirNombre(usuario.nombre || "").apellidos : "",
-            email: usuario ? usuario.correo || "" : "",
+            nombre: nombreBase,
+            apellidos: apellidosBase,
+            email: emailBase,
             asunto: "",
             mensaje: "",
         })
@@ -223,7 +258,7 @@ function Contacto() {
                                                         className={`form-control form-control-lg border-0 shadow-sm ${
                                                             errors.apellidos ? "is-invalid" : ""
                                                         }`}
-                                                        value={formData.apaterno}
+                                                        value={formData.apellidos}
                                                         onChange={handleChange}
                                                         placeholder="Pérez Beltrán"
                                                     />
@@ -325,10 +360,7 @@ function Contacto() {
                                             <Modal trigger={mostrarModal} onClose={handleCloseModal}>
                                                 <div className="p-4">
                                                     <h5>Mensaje enviado</h5>
-                                                    <p>
-                                                        Nos pondremos en contacto contigo a la
-                                                        brevedad.
-                                                    </p>
+                                                    <p>Nos pondremos en contacto contigo a la brevedad.</p>
                                                 </div>
                                             </Modal>
                                         )}
