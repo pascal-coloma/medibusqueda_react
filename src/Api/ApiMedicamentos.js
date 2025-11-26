@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ciudadId } from "./ApiCiudad";
 
 

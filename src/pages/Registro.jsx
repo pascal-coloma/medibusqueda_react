@@ -13,6 +13,9 @@ function Registro() {
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const watchedPassword = watch('clave');
+    const ciudadGuardada = localStorage.getItem("ciudad")
+
+    const [ciudad, setCiudad] = useState(ciudadGuardada ? ciudadGuardada : "0")
 
     const registrar = async (data) => {
         setError("");
@@ -104,7 +107,7 @@ function Registro() {
             setError("Debe aceptar los términos y condiciones");
             return false;
         }
-        if (!data.ciudad){
+        if (!data.ciudad) {
             setError("Seleccione una ciudad");
             return false;
         }
@@ -299,7 +302,7 @@ function Registro() {
                                 <small className="text-danger">{errors.confirmarClave.message}</small>
                             )}
                         </div>
-                        <CiudadSelect />
+                        <CiudadSelect value={ciudad} onChange={setCiudad} />
                         {/* Aceptar términos */}
                         <div className="mb-4 form-check">
                             <input

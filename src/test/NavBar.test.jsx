@@ -2,7 +2,6 @@ import NavBar from "../components/NavBar";
 import { describe, expect, it, vi } from "vitest"
 import { render, screen, fireEvent } from "@testing-library/react"
 import { LoginContext, LoginProvider } from "../components/LoginContext";
-import { MemoryRouter } from "react-router-dom";
 
 // Test de renderizado de la navbar 
 describe('Render Navbar', () => {

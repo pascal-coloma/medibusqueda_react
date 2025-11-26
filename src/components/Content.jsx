@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import CardMedicamento from "./CardMedicamento"
-import { ciudadId, traerCiudades } from "../Api/ApiCiudad"
 import {consultarApi} from "../Api/ApiMedicamentos"
 import CiudadSelect from "./CiudadSelect"
 

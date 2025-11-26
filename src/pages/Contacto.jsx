@@ -60,7 +60,7 @@ function Contacto() {
 
             <div
                 className="min-vh-100 d-flex align-items-center py-5"
-                
+
             >
                 <div className="container">
                     <div className="row justify-content-center animate__animated animate__fadeInUp animate__faster">
@@ -135,7 +135,7 @@ function Contacto() {
                                         </div>
                                     </div>
 
-                                    
+
                                     <div
                                         className="col-md-7 p-5 animate__animated animate__fadeInRight animate__delay-1s"
                                         style={{
@@ -246,37 +246,17 @@ function Contacto() {
 
 
                                         {mostrarModal && (
-                                            <div
-                                                className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center animate__animated animate__fadeIn"
-                                                style={{
-                                                    background: "rgba(0,0,0,0.4)",
-                                                    backdropFilter: "blur(6px)",
-                                                    zIndex: 9999,
-                                                }}
-                                            >
-                                                <div
-                                                    className="bg-white rounded-5 shadow-lg p-5 text-center animate__animated animate__zoomIn"
-                                                    style={{ maxWidth: "450px", borderRadius:"20px" }}
-                                                >
-                                                    <h4 className="text-primary mb-3 fw-bold">
-                                                        Solicitud de contacto enviada
-                                                    </h4>
-                                                    <p className="text-secondary mb-4">
-                                                        Gracias por contactarnos, te responderemos a la brevedad.
-                                                    </p>
-                                                    <button
-                                                        className="btn btn-primary px-4 fw-semibold"
-                                                        onClick={() => handleCloseModal()}
-                                                    >
-                                                        Cerrar
-                                                    </button>
+                                            <Modal trigger={mostrarModal} onClose={handleCloseModal}>
+                                                <div className="p-4">
+                                                    <h5>Mensaje enviado</h5>
+                                                    <p>Nos pondremos en contacto contigo a la brevedad.</p>
                                                 </div>
-                                            </div>
+                                            </Modal>
                                         )}
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

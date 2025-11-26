@@ -43,7 +43,7 @@ function Login() {
 
         } catch (e) {
             console.err(e);
-            setError("Error al registrar usuario")
+            setError("Error al iniciar sesion")
         }
     };
 

@@ -3,13 +3,13 @@ import { LoginContext } from "./LoginContext"
 import "../components/navbar.css"
 
 function NavBar() {
-    const { logout } = useContext(LoginContext)
+    const { usuario, logout } = useContext(LoginContext)
 
     function authLink() {
-        if (localStorage.getItem("username")) {
-            return <a className="nav-link" href="login" onClick={logout}>Cerrar Sesión</a>
+        if (usuario) {
+            return <a className="nav-link" href="/login" onClick={logout}>Cerrar Sesión</a>
         } else {
-            return <a className="nav-link" href="login">Iniciar Sesión</a>
+            return <a className="nav-link" href="/login">Iniciar Sesión</a>
         }
     }
 

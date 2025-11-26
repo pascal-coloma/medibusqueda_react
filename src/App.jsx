@@ -1,6 +1,6 @@
 import React from 'react';
 import Home from './pages/Home.jsx';
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Contacto from './pages/Contacto.jsx';
 import './App.css'
 import Registro from './pages/Registro.jsx';

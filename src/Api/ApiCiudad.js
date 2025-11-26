@@ -1,5 +1,4 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
 
 const API_URL = "http://54.161.22.247:8080/medbusq/v1"
 
