@@ -2,11 +2,14 @@
 import React, { useState } from "react";
 import Modal from "../components/modal.jsx";
 import NavBar from "../components/NavBar";
-import { obtainUsers } from "../Api/ApiUsers"
+import { getUserByCorreo, actualizarUsuario } from "../Api/ApiUsers"
 
 
 
 function Recovery() {
+    const [rutFirst8, setRutFirst8] = useState("");
+    const [digitosRut, setdigitosRut] = useState("");
+    const [foundUser, setFoundUser] = useState(null);
     const [botonPopup, setBotonPopup] = useState(false);
     const [botonPopup2, setBotonPopup2] = useState(false);
     const [user, setUser] = useState("")
@@ -26,32 +29,33 @@ function Recovery() {
             return;
         }
 
-        let usuariosResp;
+        let usuarioEncontrado;
         try {
-            usuariosResp = await obtainUsers();
+            usuarioEncontrado = await getUserByCorreo(inputUser);
         } catch (err) {
             console.error(err);
-            alert('Error al obtener usuarios. Intente más tarde.');
+            setCodeError('Error al obtener usuario. Intente más tarde.');
             return;
         }
-
-        const lista = usuariosResp && (usuariosResp.usuarios || usuariosResp.users) || [];
-
-        const usuarioEncontrado = lista.find(u => (u.correo === inputUser || u.nombre === inputUser));
 
         if (!usuarioEncontrado) {
-            alert("Usuario no encontrado");
+            setCodeError('Usuario no encontrado');
             return;
         }
 
-        // abrir primer modal para solicitar código
+        const rawRut = String(usuarioEncontrado.rut || usuarioEncontrado.RUT || usuarioEncontrado.rut_usuario || '');
+        const digits = rawRut.replace(/\D/g, '');
+        const first8 = digits.slice(0, 8);
+        setRutFirst8(first8);
+        setdigitosRut(digits);
+            setFoundUser(usuarioEncontrado);
+
         setCode("");
         setCodeError("");
         setBotonPopup(true);
     }
 
     const handleCodeContinue = () => {
-        setCodeError("");
         if (code.length !== 6) {
             setCodeError('El código debe tener 6 dígitos numéricos');
             return;
@@ -59,7 +63,7 @@ function Recovery() {
         setBotonPopup2(true);
     }
 
-    const handleConfirmNewPassword = () => {
+    const handleConfirmNewPassword = async () => {
         setPassError("");
         const MIN_PASS = 8 
         if (newPass.length < MIN_PASS) {
@@ -71,12 +75,98 @@ function Recovery() {
             return;
         }
 
-        alert('Contraseña actualizada con éxito');
-        setBotonPopup2(false);
-        setBotonPopup(false);
-        setNewPass("");
-        setRepeatPass("");
-        setUser("");
+        if (!rutFirst8) {
+            setPassError('No se encontró el RUT del usuario para actualizar la contraseña');
+            return;
+        }
+
+        
+        const buildPayload = (userObj, { useFullRut = false } = {}) => {
+            const u = userObj || {};
+            const rutVal = String(u.rut || u.RUT || u.rut_usuario || rutFirst8 || '');
+            const dv = String(u.dv_rut || u.dv || u.DV || u.dvRut || '');
+            const pnombre = u.pnombre || u.primer_nombre || u.nombre || '';
+            const snombre = u.snombre || u.segundo_nombre || '';
+            const apaterno = u.apaterno || u.apellido_paterno || '';
+            const amaterno = u.amaterno || u.apellido_materno || '';
+            const correo = u.correo || u.email || u.email_usuario || '';
+
+            let ciudadObj = null;
+            if (u.ciudad && typeof u.ciudad === 'object') {
+                ciudadObj = { id_ciudad: u.ciudad.id_ciudad || u.ciudad.id || u.ciudad };
+            } else if (u.id_ciudad || u.ciudad_id || u.ciudad) {
+                ciudadObj = { id_ciudad: Number(u.id_ciudad || u.ciudad_id || u.ciudad) };
+            }
+
+            const rutToSend = useFullRut ? rutVal : rutVal.slice(0, 8);
+
+            const result = {
+                rut: rutToSend,
+                dv_rut: dv,
+                pnombre,
+                snombre,
+                apaterno,
+                amaterno,
+                correo,
+                clave: newPass,
+            };
+
+            const ciudadId = ciudadObj && Number(ciudadObj.id_ciudad) ? Number(ciudadObj.id_ciudad) : 0;
+            result.ciudad = { id_ciudad: ciudadId };
+
+            return result;
+        };
+
+        try {
+
+            const payload = buildPayload(foundUser, { useFullRut: false });
+            console.info('Sending actualizarUsuario payload (ruta param:', rutFirst8, '):', payload);
+            await actualizarUsuario(rutFirst8, payload);
+            setPassError("");
+            alert('Contraseña actualizada con éxito');
+            setBotonPopup2(false);
+            setBotonPopup(false);
+            setNewPass("");
+            setRepeatPass("");
+            setUser("");
+            return;
+        } catch (err) {
+            
+            const attemptedPayload = typeof buildPayload === 'function' ? buildPayload(foundUser, { useFullRut: false }) : null;
+            console.error('Error al actualizar con rutFirst8:', err?.response ?? err, '\npayload:', attemptedPayload);
+
+            const serverStatus = err?.response?.status;
+            const serverData = err?.response?.data;
+
+                if (digitosRut && digitosRut !== rutFirst8) {
+                try {
+                    console.warn(`Primer intento con ${rutFirst8} falló (status=${serverStatus}). Reintentando con rut completo ${digitosRut}...`);
+                    const retryPayload = buildPayload(foundUser, { useFullRut: true });
+                    console.info('Retrying actualizarUsuario payload (ruta param:', digitosRut, '):', retryPayload);
+                    await actualizarUsuario(digitosRut, retryPayload);
+                    setPassError("");
+                    alert('Contraseña actualizada con éxito (usando RUT completo)');
+                    setBotonPopup2(false);
+                    setBotonPopup(false);
+                    setNewPass("");
+                    setRepeatPass("");
+                    setUser("");
+                    return;
+                } catch (retryErr) {
+                    const status = retryErr?.response?.status;
+                    const data = retryErr?.response?.data;
+                    setPassError(`Error al actualizar la contraseña (reintento). servidor: ${status || ''} ${data ? JSON.stringify(data) : ''} \npayload: ${JSON.stringify(retryPayload)}`);
+                    return;
+                }
+            }
+
+            if (serverStatus || serverData) {
+                setPassError(`Error al actualizar la contraseña. servidor: ${serverStatus || ''} ${serverData ? JSON.stringify(serverData) : ''} \npayload: ${JSON.stringify(attemptedPayload)}`);
+                return;
+            }
+
+            setPassError('Error al actualizar la contraseña. Intente más tarde.');
+        }
     }
 
     return (

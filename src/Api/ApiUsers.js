@@ -45,3 +45,13 @@ export async function getUserByCorreo(correo) {
     }
 }
 
+export async function actualizarUsuario(rut, datosUsuario) {
+    try {
+        const { data } = await api.put(`/usuario/${rut}`, datosUsuario);
+        return data;
+    } catch (error) {
+        handleError(error);
+        throw error;
+    }
+}
+
