@@ -2,13 +2,16 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import { useState } from "react";
-import { obtainUsers } from "../Api/ApiUsers";
+import { getUserByCorreo } from "../Api/ApiUsers";
+import { useContext } from 'react'
+import { LoginContext } from '../components/LoginContext'
 
 function Login() {
     const navigate = useNavigate();
     const [correo, setCorreo] = useState("");
     const [pass, setPass] = useState("");
     const [error, setError] = useState("");
+    const { login } = useContext(LoginContext)
 
     const validate = async (e) => {
         e.preventDefault();
@@ -22,28 +25,25 @@ function Login() {
             return;
         }
 
-        let usuarios;
         try {
-            usuarios = await obtainUsers();
-        } catch (err) {
-            console.error(err);
-            setError("Error al obtener usuarios. Intente más tarde.");
-            return;
-        }
-        try {
-            const clave = usuarios.some(usuario => usuario.clave === inputPass)
-            if (clave) {
-                localStorage.setItem("correo", inputCorreo);
-                setTimeout(() => {
-                    navigate('/perfil');
-                }, 2000);
-            } else{
-                setError("Credenciales incorrectas")
+            const usuario = await getUserByCorreo(inputCorreo)
+            if (!usuario) {
+                setError('Usuario no encontrado')
+                return
             }
 
-        } catch (e) {
-            console.err(e);
-            setError("Error al registrar usuario")
+            const storedPass = usuario.clave || usuario.contraseña || usuario.contrasena || usuario.password
+
+            if (storedPass !== inputPass) {
+                setError('Credenciales incorrectas')
+                return
+            }
+            
+            login({ id: usuario.id || usuario.id_usuario, correo: usuario.correo || inputCorreo, nombre: usuario.nombre })
+            setTimeout(() => navigate('/perfil'), 300)
+        } catch (err) {
+            console.error(err)
+            setError('Error al autenticar. Intente más tarde.')
         }
     };
 

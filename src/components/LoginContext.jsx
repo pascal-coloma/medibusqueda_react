@@ -11,24 +11,14 @@ export const LoginContext = createContext()
 
 
 export function LoginProvider({ children }) {
-    const [usuario, setUsuario] = useState("")
+    const [usuario, setUsuario] = useState(null)
 
-    const login = (user) => {
-
-        localStorage.setItem("correo", user);
-        setUsuario(user);
-
+    const login = (userObj) => {
+        setUsuario(userObj)
     }
 
     const logout = () => {
-
-        logout();
-        localStorage.removeItem("correo");
-        localStorage.removeItem("nombre");
-        localStorage.removeItem("profileImage");
-        localStorage.removeItem("busquedasRecientes");
-        navegador("/login");
-
+        setUsuario(null)
     }
 
     return (

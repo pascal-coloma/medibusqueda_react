@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-const API_URL = "http://54.161.22.247:3000/medbusq/v1"
+const API_URL = "http://54.161.22.247:8080/medbusq/v1"
 
 const api = axios.create({
     baseURL: API_URL,
@@ -31,6 +31,18 @@ export async function registrarUsuario(userData) {
         return data;
     } catch (error) {
         handleError(error);
+    }
+}
+
+
+export async function getUserByCorreo(correo) {
+    try {
+        const { data } = await api.get(`/usuario/correo/${encodeURIComponent(correo)}`)
+        return data
+    } catch (error) {
+        if (error?.response?.status == 404) return null
+        handleError(error)
+        return null
     }
 }
 

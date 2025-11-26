@@ -10,9 +10,8 @@ import Mapa from "../components/mapa"
 
 function Perfil() {
     const navegador = useNavigate()
-    let usuario = localStorage.getItem("username")
-    let fotoPerfil = localStorage.getItem('profileImage')
-    const { logout } = useContext(LoginContext)
+    const { logout, usuario } = useContext(LoginContext)
+    let fotoPerfil = usuario?.profileImage || ''
 
     const handleLogout = () => {
         logout()
@@ -69,8 +68,8 @@ function Perfil() {
                                         className="rounded-circle shadow mb-3"
                                         style={{ width: "130px", height: "130px", objectFit: "cover" }}
                                     />
-                                    <h3 className="fw-bold mb-1">Bienvenido, {localStorage.getItem("nombre") || "Usuario"}</h3>
-                                    <p className="text-muted">{localStorage.getItem("correo")}</p>
+                                    <h3 className="fw-bold mb-1">Bienvenido, {usuario?.nombre || usuario?.correo || "Usuario"}</h3>
+                                    <p className="text-muted">{usuario?.correo}</p>
                                     <div className="d-flex gap-2 mt-3">
                                         <button className="btn btn-primary" onClick={handleLogout}>
                                             Cerrar sesión

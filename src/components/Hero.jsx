@@ -1,9 +1,14 @@
 import "../components/hero.css"
 
+import { useContext } from 'react'
+import { LoginContext } from './LoginContext'
+
 function Hero() {
 
+    const { usuario } = useContext(LoginContext)
+
     function iniciado() {
-        if (localStorage.getItem("username")) {
+        if (usuario) {
             return <>
                 <p className="hero-description">Visita tu perfil</p>
                 <a href="perfil" className="btn btn-primary btn-lg hero-btn">Perfil</a>
