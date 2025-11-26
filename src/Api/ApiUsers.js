@@ -33,3 +33,15 @@ export async function registrarUsuario(userData) {
     }
 }
 
+
+export async function getUserByCorreo(correo) {
+    try {
+        const { data } = await api.get(`/usuario/correo/${encodeURIComponent(correo)}`)
+        return data
+    } catch (error) {
+        if (error?.response?.status == 404) return null
+        handleError(error)
+        return null
+    }
+}
+

@@ -1,13 +1,15 @@
 import { useContext } from "react"
 import { LoginContext } from "./LoginContext"
+import { useNavigate } from 'react-router-dom'
 import "../components/navbar.css"
 
 function NavBar() {
-    const { usuario, logout } = useContext(LoginContext)
+    const { logout, usuario } = useContext(LoginContext)
+    const navigate = useNavigate()
 
     function authLink() {
         if (usuario) {
-            return <a className="nav-link" href="/login" onClick={logout}>Cerrar Sesión</a>
+            return <a className="nav-link" href="#" onClick={() => { logout(); navigate('/login') }}>Cerrar Sesión</a>
         } else {
             return <a className="nav-link" href="/login">Iniciar Sesión</a>
         }

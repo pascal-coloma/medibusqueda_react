@@ -1,7 +1,7 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { obtainUsers, registrarUsuario } from "../Api/ApiUsers";
 import { useForm } from "react-hook-form";
 import CiudadSelect from "../components/CiudadSelect";
@@ -11,11 +11,12 @@ function Registro() {
     const [error, setError] = useState("");
     const [showPopup, setShowPopup] = useState(false);
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
     const watchedPassword = watch('clave');
-    const ciudadGuardada = localStorage.getItem("ciudad")
 
-    const [ciudad, setCiudad] = useState(ciudadGuardada ? ciudadGuardada : "0")
+    useEffect(() => {
+        setValue('ciudad', '0')
+    }, [setValue])
 
     const registrar = async (data) => {
         setError("");
@@ -51,7 +52,7 @@ function Registro() {
                 amaterno: data.amaterno,
                 correo: data.correo,
                 clave: data.clave,
-                id_ciudad: data.ciudad
+                id_ciudad: Number(data.ciudad)
             });
 
             setShowPopup(true);
@@ -107,7 +108,7 @@ function Registro() {
             setError("Debe aceptar los términos y condiciones");
             return false;
         }
-        if (!data.ciudad) {
+        if (!data.ciudad || String(data.ciudad) === '0'){
             setError("Seleccione una ciudad");
             return false;
         }
