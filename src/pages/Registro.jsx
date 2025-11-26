@@ -1,122 +1,107 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { obtainUsers, registrarUsuario } from "../Api/ApiUsers";
 import { useForm } from "react-hook-form";
 import CiudadSelect from "../components/CiudadSelect";
 
+function calcularDV(rut) {
+    if (!/^[0-9]{7,8}$/.test(rut)) return null;
+    let suma = 0;
+    let multiplicador = 2;
+    for (let i = rut.length - 1; i >= 0; i--) {
+        suma += parseInt(rut[i], 10) * multiplicador;
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+    const resto = 11 - (suma % 11);
+    if (resto === 11) return "0";
+    if (resto === 10) return "K";
+    return String(resto);
+}
+
 function Registro() {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
+    const [errorGeneral, setErrorGeneral] = useState("");
     const [showPopup, setShowPopup] = useState(false);
+    const [ciudad, setCiudad] = useState("0");
 
-    const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
-    const watchedPassword = watch('clave');
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+        getValues,
+        setValue,
+    } = useForm({
+        mode: "onChange",
+        defaultValues: {
+            rut: "",
+            dv_rut: "",
+            pnombre: "",
+            snombre: "",
+            apaterno: "",
+            amaterno: "",
+            correo: "",
+            clave: "",
+            confirmarClave: "",
+            acceptTerms: false,
+            ciudad: "0",
+        },
+    });
 
-    useEffect(() => {
-        setValue('ciudad', '0')
-    }, [setValue])
+    const watchedPassword = watch("clave");
+
+    const handleCiudadChange = (value) => {
+        setCiudad(value);
+        setValue("ciudad", value, { shouldValidate: true });
+    };
 
     const registrar = async (data) => {
-        setError("");
+        setErrorGeneral("");
 
-        // Validaciones básicas
-        if (!validarFormulario(data)) return;
-
-        // Verificar existencia de usuario
         let usuarios;
         try {
             usuarios = await obtainUsers();
         } catch (err) {
             console.error(err);
-            setError('No se pudo verificar usuarios. Intente más tarde.');
+            setErrorGeneral("No se pudo verificar usuarios. Intente más tarde.");
             return;
         }
 
-        // Guardar usuario y mostrar popup
         try {
-            const existe = usuarios.some(usuario => usuario.rut === data.rut);
+            const existe = usuarios.some((usuario) => usuario.rut === data.rut);
 
             if (existe) {
-                setError("RUT ya registrado")
+                setErrorGeneral("RUT ya registrado");
                 setShowPopup(false);
                 return;
             }
+
             await registrarUsuario({
                 rut: data.rut,
-                dv_rut: data.dv_rut,
+                dv_rut: data.dv_rut.toUpperCase(),
                 pnombre: data.pnombre,
                 snombre: data.snombre,
                 apaterno: data.apaterno,
                 amaterno: data.amaterno,
                 correo: data.correo,
                 clave: data.clave,
-                id_ciudad: Number(data.ciudad)
+                ciudad: {
+                    id_ciudad: Number(data.ciudad),
+                },
             });
 
             setShowPopup(true);
 
             setTimeout(() => {
-                navigate('/login');
+                navigate("/login");
             }, 2000);
         } catch (err) {
             console.error(err);
-            setError("Error al registrar usuario")
+            setErrorGeneral("Error al registrar usuario");
         }
-
     };
-
-    const validarFormulario = (data) => {
-        // Validar RUT numérico
-        if (!/^[0-9]{7,8}$/.test(data.rut)) {
-            setError("El RUT debe contener solo números (7 u 8 dígitos)");
-            return false;
-        }
-        // Validar dígito verificador
-        if (!/^[0-9Kk]{1}$/.test(data.dv_rut)) {
-            setError("El dígito verificador debe ser un número o la letra K");
-            return false;
-        }
-        // Validar primer nombre
-        if (!data.pnombre || data.pnombre.trim().length < 2) {
-            setError("El primer nombre debe tener al menos 2 caracteres");
-            return false;
-        }
-        // Validar apellidos
-        if (!data.apaterno || data.apaterno.trim().length < 2) {
-            setError("Debe ingresar su apellido paterno");
-            return false;
-        }
-        if (!data.amaterno || data.amaterno.trim().length < 2) {
-            setError("Debe ingresar su apellido materno");
-            return false;
-        }
-        // Validar correo electrónico
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.correo)) {
-            setError("Debe ingresar un correo electrónico válido");
-            return false;
-        }
-        // Validar contraseña
-        if (!data.clave || data.clave.length < 4) {
-            setError("La contraseña debe tener al menos 4 caracteres");
-            return false;
-        }
-        // Validar términos
-        if (!data.acceptTerms) {
-            setError("Debe aceptar los términos y condiciones");
-            return false;
-        }
-        if (!data.ciudad || String(data.ciudad) === '0'){
-            setError("Seleccione una ciudad");
-            return false;
-        }
-        // Si todo es válido
-        setError("");
-        return true;
-    };
-
 
     return (
         <>
@@ -128,7 +113,7 @@ function Registro() {
                     backgroundColor: "#caf8f2",
                     minHeight: "100vh",
                     filter: showPopup ? "blur(5px)" : "none",
-                    transition: "filter 0.3s"
+                    transition: "filter 0.3s",
                 }}
             >
                 <div
@@ -138,7 +123,6 @@ function Registro() {
                     <h2 className="text-center mb-4 text-primary fw-bold">Registro de Usuario</h2>
 
                     <form onSubmit={handleSubmit(registrar)}>
-                        {/* RUT y DV */}
                         <div className="mb-3 text-start">
                             <label htmlFor="rut" className="form-label fw-semibold">
                                 RUT (Sin puntos ni guion)
@@ -152,7 +136,25 @@ function Registro() {
                                     placeholder="Ej: 12345678"
                                     maxLength={8}
                                     style={{ flex: 1 }}
-                                    {...register("rut", { required: true, pattern: /^[0-9]{7,8}$/ })}
+                                    {...register("rut", {
+                                        required: "El RUT es obligatorio",
+                                        pattern: {
+                                            value: /^[0-9]{7,8}$/,
+                                            message: "El RUT debe contener solo números (7 u 8 dígitos)",
+                                        },
+                                        validate: {
+                                            modulo11: (value) => {
+                                                const dvEsperado = calcularDV(value);
+                                                const dvIngresado = (getValues("dv_rut") || "").toUpperCase();
+                                                if (!dvEsperado) return "RUT inválido";
+                                                if (!dvIngresado) return true;
+                                                return (
+                                                    dvEsperado === dvIngresado ||
+                                                    `Dígito verificador no valido`
+                                                );
+                                            },
+                                        },
+                                    })}
                                 />
 
                                 <span className="fw-bold">-</span>
@@ -164,24 +166,41 @@ function Registro() {
                                     placeholder="DV"
                                     maxLength={1}
                                     style={{ width: "60px" }}
-                                    {...register("dv_rut", { required: true, pattern: /^[0-9Kk]{1}$/ })}
+                                    {...register("dv_rut", {
+                                        required: "El dígito verificador es obligatorio",
+                                        pattern: {
+                                            value: /^[0-9Kk]{1}$/,
+                                            message:
+                                                "El dígito verificador debe ser un número o la letra K",
+                                        },
+                                        validate: {
+                                            modulo11: (value) => {
+                                                const rut = getValues("rut");
+                                                if (!/^[0-9]{7,8}$/.test(rut)) return true;
+                                                const dvEsperado = calcularDV(rut);
+                                                if (!dvEsperado) return "RUT inválido";
+                                                return (
+                                                    dvEsperado === value.toUpperCase() ||
+                                                    `Digito verificador no valido`
+                                                );
+                                            },
+                                        },
+                                    })}
                                 />
                             </div>
 
                             {errors.rut && (
                                 <small className="text-danger d-block mt-1">
-                                    Ingrese un RUT válido (solo números)
+                                    {errors.rut.message}
                                 </small>
                             )}
                             {errors.dv_rut && (
                                 <small className="text-danger d-block mt-1">
-                                    Dígito verificador inválido
+                                    {errors.dv_rut.message}
                                 </small>
                             )}
                         </div>
 
-
-                        {/* Primer Nombre */}
                         <div className="mb-3 text-start">
                             <label htmlFor="pnombre" className="form-label fw-semibold">
                                 Primer nombre
@@ -191,14 +210,19 @@ function Registro() {
                                 id="pnombre"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su primer nombre"
-                                {...register("pnombre", { required: true })}
+                                {...register("pnombre", {
+                                    required: "El primer nombre es obligatorio",
+                                    minLength: {
+                                        value: 3,
+                                        message: "El primer nombre debe tener al menos 3 caracteres",
+                                    },
+                                })}
                             />
                             {errors.pnombre && (
-                                <small className="text-danger">El primer nombre es obligatorio</small>
+                                <small className="text-danger">{errors.pnombre.message}</small>
                             )}
                         </div>
 
-                        {/* Segundo Nombre (opcional) */}
                         <div className="mb-3 text-start">
                             <label htmlFor="snombre" className="form-label fw-semibold">
                                 Segundo nombre
@@ -212,7 +236,6 @@ function Registro() {
                             />
                         </div>
 
-                        {/* Apellido Paterno */}
                         <div className="mb-3 text-start">
                             <label htmlFor="apaterno" className="form-label fw-semibold">
                                 Apellido paterno
@@ -222,14 +245,19 @@ function Registro() {
                                 id="apaterno"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su apellido paterno"
-                                {...register("apaterno", { required: true })}
+                                {...register("apaterno", {
+                                    required: "El apellido paterno es obligatorio",
+                                    minLength: {
+                                        value: 2,
+                                        message: "Debe ingresar su apellido paterno",
+                                    },
+                                })}
                             />
                             {errors.apaterno && (
-                                <small className="text-danger">El apellido paterno es obligatorio</small>
+                                <small className="text-danger">{errors.apaterno.message}</small>
                             )}
                         </div>
 
-                        {/* Apellido Materno */}
                         <div className="mb-3 text-start">
                             <label htmlFor="amaterno" className="form-label fw-semibold">
                                 Apellido materno
@@ -239,14 +267,19 @@ function Registro() {
                                 id="amaterno"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su apellido materno"
-                                {...register("amaterno", { required: true })}
+                                {...register("amaterno", {
+                                    required: "El apellido materno es obligatorio",
+                                    minLength: {
+                                        value: 2,
+                                        message: "Debe ingresar su apellido materno",
+                                    },
+                                })}
                             />
                             {errors.amaterno && (
-                                <small className="text-danger">El apellido materno es obligatorio</small>
+                                <small className="text-danger">{errors.amaterno.message}</small>
                             )}
                         </div>
 
-                        {/* Correo */}
                         <div className="mb-3 text-start">
                             <label htmlFor="correo" className="form-label fw-semibold">
                                 Correo electrónico
@@ -257,17 +290,21 @@ function Registro() {
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su email"
                                 {...register("correo", {
-                                    required: true,
-                                    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                                    required: "El correo es obligatorio",
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Debe ingresar un correo electrónico válido",
+                                    },
                                 })}
                             />
-                            {errors.correo && <small className="text-danger">Correo inválido</small>}
+                            {errors.correo && (
+                                <small className="text-danger">{errors.correo.message}</small>
+                            )}
                             <div className="form-text">
-                                Nunca compartiremos su correo con nadie más.
+                                Nunca compartiremos su correo.
                             </div>
                         </div>
 
-                        {/* Clave */}
                         <div className="mb-3 text-start">
                             <label htmlFor="clave" className="form-label fw-semibold">
                                 Contraseña
@@ -277,14 +314,20 @@ function Registro() {
                                 id="clave"
                                 className="form-control rounded-pill"
                                 placeholder="Ingrese su contraseña"
-                                {...register("clave", { required: true, minLength: 4 })}
+                                {...register("clave", {
+                                    required: "La contraseña es obligatoria",
+                                    minLength: {
+                                        value: 8,
+                                        message:
+                                            "La contraseña debe tener al menos 8 caracteres",
+                                    },
+                                })}
                             />
                             {errors.clave && (
-                                <small className="text-danger">
-                                    La contraseña debe tener al menos 4 caracteres
-                                </small>
+                                <small className="text-danger">{errors.clave.message}</small>
                             )}
                         </div>
+
                         <div className="mb-3 text-start">
                             <label htmlFor="confirmarClave" className="form-label fw-semibold">
                                 Confirmar contraseña
@@ -295,22 +338,46 @@ function Registro() {
                                 className="form-control rounded-pill"
                                 placeholder="Repita su contraseña"
                                 {...register("confirmarClave", {
-                                    required: true,
-                                    validate: value => value === watchedPassword || "Las contraseñas no coinciden"
+                                    required: "Debe confirmar la contraseña",
+                                    validate: (value) =>
+                                        value === watchedPassword ||
+                                        "Las contraseñas no coinciden",
                                 })}
                             />
                             {errors.confirmarClave && (
-                                <small className="text-danger">{errors.confirmarClave.message}</small>
+                                <small className="text-danger">
+                                    {errors.confirmarClave.message}
+                                </small>
                             )}
                         </div>
-                        <CiudadSelect value={ciudad} onChange={setCiudad} />
-                        {/* Aceptar términos */}
+
+                        <div className="mb-3 text-start">
+                            <label className="form-label fw-semibold">Ciudad</label>
+                            <CiudadSelect value={ciudad} onChange={handleCiudadChange} />
+                            <input
+                                type="hidden"
+                                {...register("ciudad", {
+                                    validate: (value) =>
+                                        value && value !== "0"
+                                            ? true
+                                            : "Seleccione una ciudad",
+                                })}
+                            />
+                            {errors.ciudad && (
+                                <small className="text-danger d-block mt-1">
+                                    {errors.ciudad.message}
+                                </small>
+                            )}
+                        </div>
+
                         <div className="mb-4 form-check">
                             <input
                                 type="checkbox"
                                 id="acceptTerms"
                                 className="form-check-input"
-                                {...register("acceptTerms", { required: true })}
+                                {...register("acceptTerms", {
+                                    required: "Debe aceptar los términos y condiciones",
+                                })}
                             />
                             <label
                                 className="form-check-label fw-semibold"
@@ -324,13 +391,12 @@ function Registro() {
                             {errors.acceptTerms && (
                                 <div>
                                     <small className="text-danger">
-                                        Debe aceptar los términos y condiciones
+                                        {errors.acceptTerms.message}
                                     </small>
                                 </div>
                             )}
                         </div>
 
-                        {/* Botón */}
                         <button
                             type="submit"
                             className="btn btn-primary w-100 rounded-pill fw-bold shadow-sm"
@@ -338,12 +404,15 @@ function Registro() {
                             Registrar
                         </button>
 
-                        {error && <div className="mt-3 text-danger text-center">{error}</div>}
+                        {errorGeneral && (
+                            <div className="mt-3 text-danger text-center">
+                                {errorGeneral}
+                            </div>
+                        )}
                     </form>
                 </div>
             </div>
 
-            {/* Modal popup */}
             {showPopup && (
                 <div
                     className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -355,13 +424,15 @@ function Registro() {
                     >
                         <h4 className="text-success mb-3">¡Registro exitoso!</h4>
                         <p>Serás redirigido al inicio de sesión...</p>
-                        <div className="spinner-border text-primary mt-3" role="status">
+                        <div
+                            className="spinner-border text-primary mt-3"
+                            role="status"
+                        >
                             <span className="visually-hidden">Loading...</span>
                         </div>
                     </div>
                 </div>
             )}
-
 
             <Footer />
         </>

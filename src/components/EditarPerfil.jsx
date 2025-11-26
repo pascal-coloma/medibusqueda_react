@@ -1,46 +1,39 @@
 import { useEffect, useState } from "react"
 import "../pages/Perfil.css"
+import CiudadSelect from "./CiudadSelect"
 
 function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, onCancel }) {
     const [loading, setLoading] = useState(true)
     const [username, setUsername] = useState(initialUsername || "")
-    const [ciudad, setCiudad] = useState(initialCiudad || "")
+    const [ciudad, setCiudad] = useState(initialCiudad || "0")
     const [profileImage, setProfileImage] = useState(initialImage || "")
     const [error, setError] = useState("")
 
     useEffect(() => {
-        const stored = initialUsername || localStorage.getItem('username')
-        const storedCiudad = initialCiudad || localStorage.getItem('ciudad')
-        const fotoPerfil = initialImage || localStorage.getItem('profileImage')
-
-        try {
-            setUsername(stored ? JSON.parse(stored) : "")
-        } catch (e) {
-            setUsername(stored || "")
-        }
-
-        setCiudad(storedCiudad || "")
-        setProfileImage(fotoPerfil || "")
+        setUsername(initialUsername || "")
+        setCiudad(initialCiudad || "0")
+        setProfileImage(initialImage || "")
         setLoading(false)
-    }, [])
+    }, [initialUsername, initialCiudad, initialImage])
 
     const handleSubmit = (e) => {
         e.preventDefault()
         setError("")
 
         if (!username || username.trim().length < 3) {
-            setError('El nombre debe tener al menos 3 caracteres')
+            setError("El nombre debe tener al menos 3 caracteres")
             return
         }
 
-        // Guardar en localStorage
-        localStorage.setItem('username', JSON.stringify(username.trim()))
-        if (ciudad) localStorage.setItem('ciudad', ciudad)
-        else localStorage.removeItem('ciudad')
-        if (profileImage) localStorage.setItem('profileImage', profileImage)
-        else localStorage.removeItem('profileImage')
+        const usernameTrim = username.trim()
 
-        if (onSave) onSave({ username: username.trim(), ciudad, profileImage })
+        if (onSave) {
+            onSave({
+                username: usernameTrim,
+                ciudad,
+                profileImage: profileImage || ""
+            })
+        }
     }
 
     if (loading) return null
@@ -71,18 +64,18 @@ function EditarPerfil({ initialUsername, initialCiudad, initialImage, onSave, on
 
                 <div className="mb-3">
                     <label className="form-label fw-semibold">Ciudad</label>
-                    <select className="form-select" value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
-                        <option value="1">Viña del mar</option>
-                        <option value="2">Valparaiso</option>
-                        <option value="3">Chillan</option>
-                    </select>
+                    <CiudadSelect value={ciudad} onChange={setCiudad} />
                 </div>
 
                 {error && <div className="text-danger mb-3">{error}</div>}
 
                 <div className="d-flex gap-2 justify-content-end">
-                    <button className="btn btn-primary" type="submit">Guardar</button>
-                    <button className="btn btn-secondary" type="button" onClick={onCancel}>Cancelar</button>
+                    <button className="btn btn-primary" type="submit">
+                        Guardar
+                    </button>
+                    <button className="btn btn-secondary" type="button" onClick={onCancel}>
+                        Cancelar
+                    </button>
                 </div>
             </form>
         </div>

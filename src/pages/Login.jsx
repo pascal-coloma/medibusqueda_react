@@ -2,7 +2,7 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import { useState } from "react";
-import { getUserByCorreo } from "../Api/ApiUsers";
+import { obtainUsers } from "../Api/ApiUsers";
 import { useContext } from 'react'
 import { LoginContext } from '../components/LoginContext'
 
@@ -17,34 +17,26 @@ function Login() {
         e.preventDefault();
         setError("");
 
-        const inputCorreo = correo.trim();
-        const inputPass = pass;
+        const usuarios = await obtainUsers();
+        const user = usuarios.find(u => u.correo === correo.trim());
 
-        if (!inputCorreo || !inputPass) {
-            setError("Ingrese correo y contraseña");
+        if (!user) {
+            setError("Usuario no encontrado");
             return;
         }
 
-        try {
-            const usuario = await getUserByCorreo(inputCorreo)
-            if (!usuario) {
-                setError('Usuario no encontrado')
-                return
-            }
-
-            const storedPass = usuario.clave || usuario.contraseña || usuario.contrasena || usuario.password
-
-            if (storedPass !== inputPass) {
-                setError('Credenciales incorrectas')
-                return
-            }
-            
-            login({ id: usuario.id || usuario.id_usuario, correo: usuario.correo || inputCorreo, nombre: usuario.nombre })
-            setTimeout(() => navigate('/perfil'), 300)
-        } catch (err) {
-            console.error(err)
-            setError('Error al autenticar. Intente más tarde.')
+        if (user.clave !== pass) {
+            setError("Contraseña incorrecta");
+            return;
         }
+
+        login({
+            nombre: user.pnombre,     
+            correo: user.correo,
+            profileImage: user.profileImage || ""
+        });
+
+        navigate("/perfil");
     };
 
     return (
