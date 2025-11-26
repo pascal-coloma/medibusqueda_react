@@ -1,10 +1,7 @@
-
 import React, { useState } from "react";
 import Modal from "../components/modal.jsx";
 import NavBar from "../components/NavBar";
 import { getUserByCorreo, actualizarUsuario } from "../Api/ApiUsers"
-
-
 
 function Recovery() {
     const [rutFirst8, setRutFirst8] = useState("");
