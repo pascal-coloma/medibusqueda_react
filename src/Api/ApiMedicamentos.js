@@ -6,7 +6,7 @@ import { ciudadId } from "./ApiCiudad";
 export async function consultarApi(id, medicamento, setMedicamentos) {
 
     const ultimas = JSON.parse(localStorage.getItem("busquedasRecientes")) || []
-    const url = "http://localhost:3000/api/medicamento"
+    const url = "http://54.161.22.247:3000/api/medicamento"
     const ciudad = await ciudadId(id)
     
     const payload = {

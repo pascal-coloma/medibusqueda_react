@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-const API_URL = "http://localhost:8080/medbusq/v1"
+const API_URL = "http://54.161.22.247:8080/medbusq/v1"
 
 const api = axios.create({
     baseURL: API_URL,

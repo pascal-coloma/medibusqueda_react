@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { traerCiudades } from "../Api/ApiCiudad.js";
 
 export default function CiudadSelect({ value, onChange }) {
+    
     const [ciudades, setCiudades] = useState([]);
 
     useEffect(() => {
