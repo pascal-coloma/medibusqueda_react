@@ -24,6 +24,7 @@ function Registro() {
     const navigate = useNavigate();
     const [errorGeneral, setErrorGeneral] = useState("");
     const [showPopup, setShowPopup] = useState(false);
+    const [showTermsModal, setShowTermsModal] = useState(false);
     const [ciudad, setCiudad] = useState("0");
 
     const {
@@ -110,7 +111,6 @@ function Registro() {
             <div
                 className="d-flex justify-content-center align-items-center py-5"
                 style={{
-                    backgroundColor: "#caf8f2",
                     minHeight: "100vh",
                     filter: showPopup ? "blur(5px)" : "none",
                     transition: "filter 0.3s",
@@ -120,7 +120,7 @@ function Registro() {
                     className="card p-4 p-md-5 shadow-lg rounded-4 animate__animated animate__fadeInUp"
                     style={{ maxWidth: 500, width: "100%" }}
                 >
-                    <h2 className="text-center mb-4 text-primary fw-bold">Registro de Usuario</h2>
+                    <h2 className="text-center mb-4 fw-bold">Registro de Usuario</h2>
 
                     <form onSubmit={handleSubmit(registrar)}>
                         <div className="mb-3 text-start">
@@ -384,7 +384,14 @@ function Registro() {
                                 htmlFor="acceptTerms"
                             >
                                 Acepto los{" "}
-                                <a href="#" className="text-decoration-none">
+                                <a
+                                    href="#"
+                                    className="text-decoration-none"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setShowTermsModal(true);
+                                    }}
+                                >
                                     términos y condiciones
                                 </a>
                             </label>
@@ -413,6 +420,7 @@ function Registro() {
                 </div>
             </div>
 
+            {/* Modal éxito registro */}
             {showPopup && (
                 <div
                     className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -433,6 +441,84 @@ function Registro() {
                     </div>
                 </div>
             )}
+
+            {/* Modal Términos y condiciones */}
+            {/* Modal Términos y condiciones */}
+            {showTermsModal && (
+                <div
+                    className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                    style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1100 }}
+                >
+                    <div
+                        className="bg-white p-4 rounded-4 shadow-lg animate__animated animate__fadeInDown"
+                        style={{ maxWidth: 600, width: "90%" }}
+                    >
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h4
+                                className="mb-0"
+                                style={{ color: "#2b2b2b", fontWeight: "700" }}
+                            >
+                                Términos y condiciones
+                            </h4>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                aria-label="Cerrar"
+                                onClick={() => setShowTermsModal(false)}
+                            />
+                        </div>
+
+                        <p className="mb-2" style={{ color: "#2b2b2b" }}>
+                            Al registrarte en esta plataforma aceptas que:
+                        </p>
+
+                        <ul>
+                            <li style={{ color: "#2b2b2b" }}>
+                                Almacenemos los datos personales que ingresas en el formulario
+                                de registro (RUT, nombre, correo, ciudad, etc.) con el fin de
+                                gestionar tu cuenta y mejorar la experiencia de uso.
+                            </li>
+
+                            <li style={{ color: "#2b2b2b" }}>
+                                Podemos utilizar tus datos de ubicación (cuando nos los
+                                proporciones o los autorices en tu dispositivo) para mostrarte
+                                medicamentos y farmacias cercanas a tu posición.
+                            </li>
+
+                            <li style={{ color: "#2b2b2b" }}>
+                                La información de ubicación se usa exclusivamente para
+                                ofrecerte resultados relevantes y no se compartirá con terceros
+                                sin tu consentimiento, salvo obligación legal.
+                            </li>
+
+                            <li style={{ color: "#2b2b2b" }}>
+                                Puedes solicitar la actualización o eliminación de tus datos
+                                personales conforme a la legislación vigente de protección de
+                                datos.
+                            </li>
+                        </ul>
+
+                        <p className="mb-0" style={{ color: "#2b2b2b" }}>
+                            Si no estás de acuerdo con estos términos, te recomendamos no
+                            completar el registro ni marcar la casilla de aceptación.
+                        </p>
+
+                        <div className="text-end mt-3">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => setShowTermsModal(false)}
+                            >
+                                Entendido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+
+
 
             <Footer />
         </>

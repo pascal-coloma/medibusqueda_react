@@ -45,7 +45,7 @@ function Recovery() {
         const first8 = digits.slice(0, 8);
         setRutFirst8(first8);
         setdigitosRut(digits);
-            setFoundUser(usuarioEncontrado);
+        setFoundUser(usuarioEncontrado);
 
         setCode("");
         setCodeError("");
@@ -62,7 +62,7 @@ function Recovery() {
 
     const handleConfirmNewPassword = async () => {
         setPassError("");
-        const MIN_PASS = 8 
+        const MIN_PASS = 8
         if (newPass.length < MIN_PASS) {
             setPassError(`La contraseña debe tener al menos ${MIN_PASS} caracteres`);
             return;
@@ -77,7 +77,7 @@ function Recovery() {
             return;
         }
 
-        
+
         const buildPayload = (userObj, { useFullRut = false } = {}) => {
             const u = userObj || {};
             const rutVal = String(u.rut || u.RUT || u.rut_usuario || rutFirst8 || '');
@@ -128,14 +128,14 @@ function Recovery() {
             setUser("");
             return;
         } catch (err) {
-            
+
             const attemptedPayload = typeof buildPayload === 'function' ? buildPayload(foundUser, { useFullRut: false }) : null;
             console.error('Error al actualizar con rutFirst8:', err?.response ?? err, '\npayload:', attemptedPayload);
 
             const serverStatus = err?.response?.status;
             const serverData = err?.response?.data;
 
-                if (digitosRut && digitosRut !== rutFirst8) {
+            if (digitosRut && digitosRut !== rutFirst8) {
                 try {
                     console.warn(`Primer intento con ${rutFirst8} falló (status=${serverStatus}). Reintentando con rut completo ${digitosRut}...`);
                     const retryPayload = buildPayload(foundUser, { useFullRut: true });
@@ -170,11 +170,11 @@ function Recovery() {
         <>
             <NavBar />
             <div style={{ padding: "2rem", textAlign: "center" }}>
-                <h1>Recuperar contraseña</h1>
-                <p>Página de recuperación de contraseña</p>
+                <h1>Recuperacion de contraseña</h1>
+                <p>No te preocupes, todos hemos olvidado nuestra contraseña alguna vez!</p>
                 <label htmlFor="correoRecuperar" className="form-label"><strong>Email</strong></label>
                 <input type="text" id="correoRecuperar" className="form-control" aria-describedby="passwordHelpBlock"
-                        placeholder="Ingrese su usuario" value={user} onChange={(e) => setUser(e.target.value)} />
+                    placeholder="Ingrese su usuario" value={user} onChange={(e) => setUser(e.target.value)} />
                 <div id="emailHelp" className="form-text">Nunca compartiremos su correo electrónico con nadie.</div>
             </div>
             <button onClick={validar} className="btn btn-primary">Recuperar contraseña</button>

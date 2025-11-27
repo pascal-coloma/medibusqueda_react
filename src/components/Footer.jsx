@@ -12,7 +12,7 @@ function Footer() {
                         height="40"
                         className="me-2"
                     />
-                    <span className="fw-bold text-primary">MediBusqueda</span>
+                    <span className="fw-bold">MediBusqueda</span>
                 </a>
                 <span className="text-muted">&copy; 2025 MediBusqueda. Todos los derechos reservados.</span>
             </div>

@@ -1,24 +1,23 @@
 .popup {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.5);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050; /* siempre sobre todo */
+  z-index: 1050;
 }
 
 .popup-inner {
   position: relative;
-  background: #fff;
+  background: rgba(15, 23, 42, 0.96);
   padding: 2rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   max-width: 800px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  color: #e5e7eb;
 }

@@ -23,6 +23,11 @@ function Perfil() {
     const navegador = useNavigate()
     const { logout, usuario, login } = useContext(LoginContext)
 
+    const busquedasGuardadas = JSON.parse(
+        localStorage.getItem("busquedasRecientes") || "[]"
+    )
+
+    const [showMap, setShowMap] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [perfil, setPerfil] = useState({
         username: "",
@@ -30,32 +35,120 @@ function Perfil() {
         ciudad: "0"
     })
 
+    const busquedasUnicas = Array.from(
+        new Set(
+            busquedasGuardadas
+                .map((b) => (b || "").trim())
+                .filter((b) => b.length > 0)
+        )
+    )
+
+    const ciudadPorDefecto =
+        (usuario && usuario.ciudad && usuario.ciudad.id_ciudad
+            ? String(usuario.ciudad.id_ciudad)
+            : localStorage.getItem("ciudad")) || "0"
+
     useEffect(() => {
         if (!usuario) {
             const timer = setTimeout(() => {
                 navegador("/login")
-            }, 2000)
+            }, 3500)
             return () => clearTimeout(timer)
         } else {
-            traerCiudades().then(ciudades => {
-                const ciudadUsuario = ciudades.find(c => c.usuarios.some(u => u.correo === usuario.correo));
-                setPerfil({
-                    username: usuario.nombre || "",
-                    profileImage: usuario.profileImage || "",
-                    ciudad: ciudadUsuario ? ciudadUsuario.id_ciudad : "0"
-                })
+            // Nombre/foto inmediatos
+            setPerfil((prev) => ({
+                ...prev,
+                username: usuario.nombre || "",
+                profileImage: usuario.profileImage || "",
+                ciudad: usuario.ciudad?.id_ciudad
+                    ? String(usuario.ciudad.id_ciudad)
+                    : prev.ciudad || "0"
+            }))
+
+            // Resolver ciudad y recién luego mostrar mapa
+            traerCiudades().then((ciudades) => {
+                const ciudadUsuario = ciudades.find((c) =>
+                    c.usuarios.some((u) => u.correo === usuario.correo)
+                )
+                setPerfil((prev) => ({
+                    ...prev,
+                    ciudad: ciudadUsuario ? String(ciudadUsuario.id_ciudad) : "0"
+                }))
+                setShowMap(true)
             })
         }
     }, [usuario, navegador])
-    
+
     const handleLogout = () => {
         logout()
         navegador("/login")
     }
 
     if (!usuario) {
-        return <h1>No existe usuario registrado</h1>
+        return (
+            <>
+                <NavBar />
+
+                <main
+                    className="d-flex justify-content-center align-items-center"
+                    style={{
+                        minHeight: "80vh",
+                        color: "var(--text-main)"
+                    }}
+                >
+                    <div
+                        className="card p-3 p-md-4 shadow-lg rounded-4 animate__animated animate__fadeInUp"
+                        style={{
+                            maxWidth: "420px",
+                            width: "100%",
+                            background: "rgba(15, 23, 42, 0.9)",
+                            border: "1px solid rgba(148, 163, 184, 0.35)",
+                            color: "var(--text-main)"
+                        }}
+                    >
+                        <h2
+                            className="text-center mb-3 fw-bold"
+                            style={{ color: "var(--text-main)" }}
+                        >
+                            Acceso restringido
+                        </h2>
+
+                        <p
+                            className="text-center mb-4"
+                            style={{ color: "var(--text-muted)" }}
+                        >
+                            Debes iniciar sesión para acceder a tu perfil y a tus
+                            búsquedas recientes.
+                        </p>
+
+                        <button
+                            type="button"
+                            className="btn w-100 py-2 mb-2"
+                            style={{
+                                background: "linear-gradient(135deg, var(--primary), #2563eb)",
+                                border: "none",
+                                borderRadius: "999px",
+                                fontWeight: "600",
+                                color: "#f9fafb",
+                                boxShadow: "0 10px 25px rgba(15, 23, 42, 0.75)"
+                            }}
+                            onClick={() => navegador("/login")}
+                        >
+                            Ir a iniciar sesión
+                        </button>
+
+                        <p
+                            className="text-center small mb-0"
+                            style={{ color: "var(--text-muted)" }}
+                        >
+                            Serás redirigido automáticamente en unos segundos…
+                        </p>
+                    </div>
+                </main>
+            </>
+        )
     }
+
 
     const displayName =
         capitalizarNombreCompleto(perfil.username) || "Usuario"
@@ -67,91 +160,145 @@ function Perfil() {
     return (
         <>
             <NavBar />
-            <div className="container py-5">
-                <div className="row justify-content-center">
-                    <div className="col-lg-8">
-                        <div className="card shadow-sm rounded-4 p-4 bg-light">
-                            <div className="d-flex flex-column align-items-center text-center">
-                                <img
-                                    src={fotoPerfil}
-                                    alt="Foto de perfil"
-                                    className="rounded-circle shadow mb-3"
-                                    style={{
-                                        width: "130px",
-                                        height: "130px",
-                                        objectFit: "cover"
-                                    }}
-                                />
-                                <h3 className="fw-bold mb-1">
-                                    Bienvenido, {displayName}
-                                </h3>
-                                <p className="text-muted">{usuario.correo}</p>
-                                <div className="d-flex gap-2 mt-3">
-                                    <button
-                                        className="btn btn-secondary"
-                                        onClick={() => setOpenModal(true)}
-                                    >
-                                        Editar perfil
-                                    </button>
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={handleLogout}
-                                    >
-                                        Cerrar sesión
-                                    </button>
+
+            <div className="perfil-page-wrapper">
+                {!showMap && (
+                    <div className="loading-overlay">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando…</span>
+                        </div>
+                    </div>
+                )}
+
+                <div className={!showMap ? "blur-content" : ""}>
+                    <div className="perfil-hero">
+                        <div className="container py-5">
+                            <div className="row justify-content-center">
+                                <div className="col-12 col-lg-10">
+                                    <div className="perfil-glass-card">
+                                        <div className="row g-4 align-items-stretch">
+                                            {/* Columna izquierda: perfil */}
+                                            <div className="col-12 col-lg-5 d-flex">
+                                                <div className="perfil-info-card">
+                                                    <div className="perfil-avatar-wrapper">
+                                                        <div className="perfil-avatar-ring">
+                                                            <img
+                                                                src={fotoPerfil}
+                                                                alt="Foto de perfil"
+                                                                className="perfil-avatar-img"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="perfil-text">
+                                                        <span className="perfil-label">
+                                                            Mi perfil
+                                                        </span>
+                                                        <h2 className="perfil-title">
+                                                            Bienvenido/a, {displayName}
+                                                        </h2>
+                                                        <p className="perfil-email">
+                                                            {usuario.correo}
+                                                        </p>
+
+                                                        <div className="perfil-actions">
+                                                            <button
+                                                                className="btn btn-light perfil-btn"
+                                                                onClick={() => setOpenModal(true)}
+                                                            >
+                                                                Editar perfil
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-outline-light perfil-btn"
+                                                                onClick={handleLogout}
+                                                            >
+                                                                Cerrar sesión
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    {openModal && (
+                                                        <Popup
+                                                            trigger={openModal}
+                                                            onClose={() => setOpenModal(false)}
+                                                        >
+                                                            <EditarPerfil
+                                                                initialUsername={perfil.username}
+                                                                initialCiudad={perfil.ciudad}
+                                                                initialImage={perfil.profileImage}
+                                                                onCancel={() => setOpenModal(false)}
+                                                                onSave={(data) => {
+                                                                    const nuevoPerfil = {
+                                                                        ...usuario,
+                                                                        nombre: data.username,
+                                                                        profileImage: data.profileImage || "",
+                                                                        ciudad: data.ciudad || "0"
+                                                                    }
+                                                                    login(nuevoPerfil)
+                                                                    setOpenModal(false)
+                                                                }}
+                                                            />
+                                                        </Popup>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Columna derecha: búsquedas */}
+                                            <div className="col-12 col-lg-7 d-flex">
+                                                <div className="perfil-search-card">
+                                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                                        <h5 className="perfil-search-title">
+                                                            Búsquedas recientes
+                                                        </h5>
+                                                        {busquedasUnicas.length > 0 && (
+                                                            <span className="perfil-chip">
+                                                                {busquedasUnicas.length} búsqueda
+                                                                {busquedasUnicas.length > 1 && "s"}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    {busquedasUnicas.length > 0 ? (
+                                                        <div className="perfil-search-chips">
+                                                            {busquedasUnicas.map((item, index) => (
+                                                                <button
+                                                                    key={index}
+                                                                    type="button"
+                                                                    className="perfil-pill"
+                                                                    onClick={() =>
+                                                                        navegador("/", {
+                                                                            state: {
+                                                                                medicamentoBuscado: item,
+                                                                                ciudadId: ciudadPorDefecto
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                >
+                                                                    {item}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="perfil-search-empty">
+                                                            Aún no tienes búsquedas recientes.
+                                                            Empieza buscando un medicamento para
+                                                            verlo aquí.
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Map debajo de la tarjeta principal */}
+                                    <div className="perfil-map-wrapper mt-4">
+                                        {showMap && <Mapa initialCiudad={perfil.ciudad} />}
+                                    </div>
                                 </div>
                             </div>
-
-                            {openModal && (
-                                <Popup
-                                    trigger={openModal}
-                                    onClose={() => setOpenModal(false)}
-                                >
-                                    <EditarPerfil
-                                        initialUsername={perfil.username}
-                                        initialCiudad={perfil.ciudad}
-                                        initialImage={perfil.profileImage}
-                                        onCancel={() => setOpenModal(false)}
-                                        onSave={(data) => {
-                                            const nuevoPerfil = {
-                                                ...usuario,
-                                                nombre: data.username,
-                                                profileImage: data.profileImage || "",
-                                                ciudad: data.ciudad || "0"
-                                            }
-                                            login(nuevoPerfil)
-                                            setOpenModal(false)
-                                        }}
-                                    />
-                                </Popup>
-                            )}
-                        </div>
-
-                        <div className="card shadow-sm rounded-4 p-4 mt-4 bg-light">
-                            <h5 className="fw-bold mb-3">Búsquedas recientes</h5>
-                            <ul className="list-group list-group-flush">
-                                {JSON.parse(
-                                    localStorage.getItem("busquedasRecientes") || "[]"
-                                ).length > 0 ? (
-                                    JSON.parse(
-                                        localStorage.getItem("busquedasRecientes")
-                                    ).map((item, index) => (
-                                        <li key={index} className="list-group-item">
-                                            {item}
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li className="list-group-item text-muted">
-                                        No hay búsquedas recientes
-                                    </li>
-                                )}
-                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <Mapa initialCiudad={perfil.ciudad} />
         </>
     )
 }

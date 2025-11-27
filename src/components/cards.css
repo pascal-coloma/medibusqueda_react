@@ -1,10 +1,44 @@
-.card:hover {
-  transform: translateY(-5px);
-  transition: transform 0.2s;
+.card {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.2s ease, background 0.2s ease;
+  padding: 1.5rem;
+  color: #e5e7eb;
 }
 
-.card-title, .card-text {
-  white-space: nowrap; 
-  overflow: hidden;    
-  text-overflow: ellipsis; 
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 28px 65px rgba(15, 23, 42, 0.95);
+  border-color: rgba(59, 130, 246, 0.9);
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.card-title,
+.card-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #2364a5;
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: #2a2f36;
+}
+
+p{
+  color: #2a2f36;
+}
+.card .btn {
+  border-radius: 999px;
+  font-weight: 500;
+  padding-inline: 1.2rem;
+  padding-block: 0.45rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.75);
 }

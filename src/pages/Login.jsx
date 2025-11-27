@@ -44,13 +44,13 @@ function Login() {
             <NavBar />
             <main
                 className="d-flex justify-content-center align-items-center"
-                style={{ backgroundColor: "#caf8f2", minHeight: "80vh" }}
+                style={{ minHeight: "80vh" }}
             >
                 <div
                     className="card p-3 p-md-4 shadow-lg rounded-4 animate__animated animate__fadeInUp"
                     style={{ maxWidth: "400px", width: "100%" }}
                 >
-                    <h2 className="text-center mb-3 text-primary fw-bold">
+                    <h2 className="text-center mb-3 fw-bold">
                         Iniciar Sesión
                     </h2>
 

@@ -215,7 +215,7 @@ function Contacto() {
                                     <div
                                         className="col-md-7 p-5 animate__animated animate__fadeInRight animate__delay-1s"
                                         style={{
-                                            background: "linear-gradient(135deg, #f0f2f7 0%, #dfe4ee 100%)",
+                                            background: "linear-gradient(135deg, #eceef1ff 0%, #dfe4ee 100%)",
                                         }}
                                     >
                                         <h3
