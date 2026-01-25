@@ -1,69 +1,45 @@
 # MediBusqueda
 
-Aplicación web desarrollada con React que permite a los usuarios buscar medicamentos según su nombre, precio y ubicación. El sistema integra fuentes oficiales como FONASA y servicios de mapas para mostrar farmacias cercanas con disponibilidad.
+Aplicación web desarrollada en React orientada a la consulta de información pública sobre medicamentos, consumiendo APIs oficiales de FONASA.  
+El proyecto busca facilitar el acceso a datos relevantes mediante una interfaz clara, simple y enfocada en la experiencia de usuario.
 
-## Características principales
+## Contexto y problema
+El acceso a información sobre medicamentos desde fuentes públicas suele presentarse de forma poco intuitiva para usuarios finales.  
+MediBusqueda aborda este problema construyendo una aplicación frontend que consume APIs públicas y presenta la información de manera estructurada y comprensible.
 
-- Búsqueda de medicamentos por nombre o compuesto activo.  
-- Visualización de farmacias cercanas mediante mapas interactivos (Leaflet).  
-- Registro, inicio de sesión y edición de perfil de usuario.  
-- Validación de formularios en tiempo real con React Hook Form.  
-- Navegación fluida entre secciones mediante React Router DOM.  
-- Diseño responsivo basado en Bootstrap 5.  
+## Funcionalidades principales
+- Consumo de APIs públicas de FONASA desde el frontend.
+- Búsqueda y visualización de información de medicamentos.
+- Gestión de perfiles de usuario para almacenar medicamentos consultados con mayor frecuencia.
+- Interfaz responsiva y orientada a la usabilidad.
 
-## Tecnologías utilizadas
+## Stack tecnológico
+- React
+- JavaScript (ES6+)
+- HTML5
+- CSS / Tailwind CSS
+- Consumo de APIs REST
 
-- **Frontend:** React 19, Vite  
-- **Librerías:**  
-  - React Router DOM  
-  - React Hook Form  
-  - Leaflet  
-  - Bootstrap 5  
-- **Lenguaje:** JavaScript (ES6+)  
-- **Pruebas:** @testing-library/react, Jest DOM  
+## Decisiones técnicas
+- Uso de React para la construcción de una interfaz basada en componentes reutilizables.
+- Separación entre lógica de negocio (consumo de APIs) y componentes de presentación.
+- Manejo de estado para controlar búsquedas, resultados y preferencias del usuario.
+- Enfoque en simplicidad y claridad del código para facilitar mantenimiento y escalabilidad.
 
-## Estructura del proyecto
+## Qué aprendí con este proyecto
+- Consumo y manejo de datos desde APIs públicas.
+- Organización de una aplicación frontend en React.
+- Manejo de estados derivados de datos remotos.
+- Diseño de interfaces enfocadas en usuarios no técnicos.
+- Buenas prácticas básicas de estructura y mantenibilidad en proyectos frontend.
 
-src/
-│
-├── Api/ # Módulos de conexión con APIs externas
-├── components/ # Componentes reutilizables (NavBar, CardMedicamento, etc.)
-├── assets/ # Imágenes y recursos estáticos
-├── App.jsx # Componente principal
-├── main.jsx # Punto de entrada
-└── styles/ # Estilos globales (opcional)
+## Posibles mejoras futuras
+- Implementación de autenticación de usuarios.
+- Persistencia de datos en un backend dedicado.
+- Incorporación de tests de componentes.
+- Mejora de rendimiento mediante optimización de renderizados.
 
-
-## Requisitos previos
-
-- Node.js 18 o superior  
-- Navegador web moderno (Chrome, Firefox, Edge o Safari)
-
-## Instalación y ejecución
-
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/usuario/medibusqueda.git
-
-2. Entrar al directorio del proyecto: 
-    ```bash
-    cd MediBusqueda
-
-3. Instalacion de dependencias:
-    ```bash
-    npm install
-
-4. Ejecutar el entorno de desarrollo:
-    ```bash
-    npm run dev
-
-5. Abrir el navegador en la direccion indicada (por defecto: http://localhost:5173)
-
-## Compilacion para produccion
-
-    ```bash
-    npm run build
-
-
-
-
+## Instalación y uso
+```bash
+npm install
+npm start
